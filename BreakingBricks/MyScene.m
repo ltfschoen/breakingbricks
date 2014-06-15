@@ -16,6 +16,15 @@
     
         self.backgroundColor = [SKColor whiteColor];
         
+        // add physics body to scene to serve as an invisible boundary
+        self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
+        
+        // change gravity settings of the physics world
+        // default of simulated earth gravity of 9.82ms^2
+        // modified to the moon of 1.6ms^2 by pull down on y-axis
+        self.physicsWorld.gravity = CGVectorMake(0, -1.6);
+        
+        
         // create new sprite node from image
         SKSpriteNode *ball = [SKSpriteNode spriteNodeWithImageNamed:@"ball"];
         
@@ -23,9 +32,8 @@
         CGPoint myPoint = CGPointMake(size.width/2, size.height/2);
         ball.position = myPoint;
         
-        // create SKPhysicsBody object before add to scene
-        // use convenience method to add to Physics Body Property
-        // of a specific Node
+        // add physics body to ball object before add to scene
+        // convenience method adds to Physics Body Property of Node
         ball.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:ball.frame.size.width/2];
         
         // add sprite node to scene
