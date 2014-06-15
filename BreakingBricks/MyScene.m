@@ -13,37 +13,27 @@
 -(id)initWithSize:(CGSize)size {    
     if (self = [super initWithSize:size]) {
         /* Setup your scene here */
+    
+        self.backgroundColor = [SKColor whiteColor];
         
-        self.backgroundColor = [SKColor colorWithRed:0.15 green:0.15 blue:0.3 alpha:1.0];
+        // create new sprite node from image
+        SKSpriteNode *ball = [SKSpriteNode spriteNodeWithImageNamed:@"ball"];
         
-        SKLabelNode *myLabel = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
+        // create a CGPoint for sprite position grabbing size parameter
+        CGPoint myPoint = CGPointMake(size.width/2, size.height/2);
+        ball.position = myPoint;
         
-        myLabel.text = @"Hello, World!";
-        myLabel.fontSize = 30;
-        myLabel.position = CGPointMake(CGRectGetMidX(self.frame),
-                                       CGRectGetMidY(self.frame));
+        // create SKPhysicsBody object before add to scene
+        // use convenience method to add to Physics Body Property
+        // of a specific Node
+        ball.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:ball.frame.size.width/2];
         
-        [self addChild:myLabel];
+        // add sprite node to scene
+        NSLog(@"%@", ball);
+        [self addChild:ball];
+        
     }
     return self;
-}
-
--(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    /* Called when a touch begins */
-    
-    for (UITouch *touch in touches) {
-        CGPoint location = [touch locationInNode:self];
-        
-        SKSpriteNode *sprite = [SKSpriteNode spriteNodeWithImageNamed:@"Spaceship"];
-        
-        sprite.position = location;
-        
-        SKAction *action = [SKAction rotateByAngle:M_PI duration:1];
-        
-        [sprite runAction:[SKAction repeatActionForever:action]];
-        
-        [self addChild:sprite];
-    }
 }
 
 -(void)update:(CFTimeInterval)currentTime {
