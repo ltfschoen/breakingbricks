@@ -24,16 +24,18 @@
 // define categories to be constant and static across the scene class
 // unsigned integers. only allowed 32 categories in Sprite Kit
 //static const uint32_t ballCategory      = 1; // 00000000000000000000000000000001
-//static const uint32_t brickCategory     = 2; // 00000000000000000000000000000010
-//static const uint32_t paddleCategory    = 4; // 00000000000000000000000000000100
+//static const uint32_t paddleCategory    = 2; // 00000000000000000000000000000010
+//static const uint32_t brickCategory     = 4; // 00000000000000000000000000000100
 //static const uint32_t edgeCategory      = 8; // 00000000000000000000000000001000
 
 // safer to use bitwise operators. takes flipped bits and moves to the left
 static const uint32_t ballCategory      = 0x1;      // 00000000000000000000000000000001
-static const uint32_t brickCategory    = 0x1 << 1; // 00000000000000000000000000000010
-static const uint32_t paddleCategory    = 0x1 << 2; // 00000000000000000000000000000100
+static const uint32_t paddleCategory    = 0x1 << 1; // 00000000000000000000000000000010
+static const uint32_t brickCategory    = 0x1 << 2; // 00000000000000000000000000000100
 static const uint32_t edgeCategory      = 0x1 << 3; // 00000000000000000000000000001000
 static const uint32_t bottomEdgeCategory = 0x1 << 4;
+
+BOOL touchingPaddle;
 
 @implementation MyScene
 
@@ -58,6 +60,23 @@ static const uint32_t bottomEdgeCategory = 0x1 << 4;
     } else {
         notTheBall = contact.bodyA;
     }
+    
+    // game over if paddle hits edge scene at bottom
+    if (contact.bodyA.categoryBitMask == bottomEdgeCategory && contact.bodyB.categoryBitMask == paddleCategory) {
+        NSLog(@"paddle fallen!");
+            
+        EndScene *end = [EndScene sceneWithSize:self.size];
+            
+        [self.view presentScene:end transition:[SKTransition fadeWithColor:[UIColor yellowColor] duration:1.0]];
+    }
+    if (contact.bodyA.categoryBitMask == paddleCategory && contact.bodyB.categoryBitMask == bottomEdgeCategory) {
+        NSLog(@"paddle fallen!");
+            
+        EndScene *end = [EndScene sceneWithSize:self.size];
+            
+        [self.view presentScene:end transition:[SKTransition fadeWithColor:[UIColor blueColor] duration:1.0]];
+    }
+    
     
     // test to see if we are touching a brick
     if (notTheBall.categoryBitMask == brickCategory) {
@@ -147,7 +166,7 @@ static const uint32_t bottomEdgeCategory = 0x1 << 4;
 
 -(void)addBricks:(CGSize) size {
     // loop to create 4 OFF bricks
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 3; i++) {
         // instantiate a new Sprite Node object
         SKSpriteNode *brick = [SKSpriteNode spriteNodeWithImageNamed:@"brick"];
         
@@ -161,7 +180,7 @@ static const uint32_t bottomEdgeCategory = 0x1 << 4;
         
         // set position of brick sprites evenly aligned across the top of the scene
         // for 4 OFF centred lines
-        int xPos = size.width/5 * (i+1); // divide with of screen by 5
+        int xPos = size.width/4 * (i+1); // divide with of screen by 5
         int yPos = size.height - 50; // same y-position
         brick.position = CGPointMake(xPos, yPos);
         
@@ -169,7 +188,7 @@ static const uint32_t bottomEdgeCategory = 0x1 << 4;
         [self addChild:brick];
     }
     
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 3; i++) {
         // instantiate a new Sprite Node object
         SKSpriteNode *brick = [SKSpriteNode spriteNodeWithImageNamed:@"brick"];
         
@@ -183,8 +202,30 @@ static const uint32_t bottomEdgeCategory = 0x1 << 4;
         
         // set position of brick sprites evenly aligned across the top of the scene
         // for 4 OFF centred lines
-        int xPos = size.width/7 * (i+1); // divide with of screen by 5
-        int yPos = size.height - 100; // same y-position
+        int xPos = size.width/4 * (i+1); // divide with of screen by 5
+        int yPos = size.height - 125; // same y-position
+        brick.position = CGPointMake(xPos, yPos);
+        
+        // add brick sprite to the scene
+        [self addChild:brick];
+    }
+    
+    for (int i = 0; i < 3; i++) {
+        // instantiate a new Sprite Node object
+        SKSpriteNode *brick = [SKSpriteNode spriteNodeWithImageNamed:@"brick"];
+        
+        // add Static Volume-based Physics Body to attach it to Physics World
+        // configure Static so it does not move around
+        brick.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:brick.frame.size];
+        brick.physicsBody.dynamic = NO;
+        
+        // add physics body to category
+        brick.physicsBody.categoryBitMask = brickCategory;
+        
+        // set position of brick sprites evenly aligned across the top of the scene
+        // for 4 OFF centred lines
+        int xPos = size.width/4 * (i+1); // divide with of screen by 5
+        int yPos = size.height - 200; // same y-position
         brick.position = CGPointMake(xPos, yPos);
         
         // add brick sprite to the scene
@@ -232,10 +273,20 @@ static const uint32_t bottomEdgeCategory = 0x1 << 4;
     self.paddle.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:self.paddle.frame.size];
     
     // make it static (change from default dynamic) so it does not move
-    self.paddle.physicsBody.dynamic = NO;
+    self.paddle.physicsBody.dynamic = YES;
     
     // add physics body to category
     self.paddle.physicsBody.categoryBitMask = paddleCategory;
+    
+    // add a different physics body 'brick' to contact test bitmask
+    self.paddle.physicsBody.contactTestBitMask = bottomEdgeCategory; // want to be notified when current category touches this other category. using a logical OR (so it flips if either of the categories contacted)
+    
+    // modify physics body friction Settings (specifically to react if paddle hits bottom edge
+    self.paddle.physicsBody.friction = 0.5;
+    self.paddle.physicsBody.linearDamping = 0.1; // 0.1 by default
+    self.paddle.physicsBody.restitution = 0.1f;
+    
+    //self.paddle.physicsBody.collisionBitMask = edgeCategory | brickCategory | paddleCategory; // collide only with these (i.e. if ball is not mentioned then it would bounce when they collide)
     
     // add paddle property to the scene to make it visible
     [self addChild:self.paddle];
@@ -247,6 +298,8 @@ static const uint32_t bottomEdgeCategory = 0x1 << 4;
 -(id)initWithSize:(CGSize)size {    
     if (self = [super initWithSize:size]) {
         /* Setup your scene here */
+        
+        touchingPaddle = NO;
         
         self.backgroundColor = [SKColor colorWithRed:0.15 green:0.15 blue:0.3 alpha:0.8];
         
@@ -274,7 +327,7 @@ static const uint32_t bottomEdgeCategory = 0x1 << 4;
         // change gravity settings of the physics world
         // default of simulated earth gravity of 9.82ms^2
         // modified to the moon of 1.6ms^2 by pull down on y-axis
-        self.physicsWorld.gravity = CGVectorMake(0, 0);
+        self.physicsWorld.gravity = CGVectorMake(0, -0.02);
         
         // tell delegating object of Physics World to look back into this same class for the
         // methods didBeginContact or didEndContact
