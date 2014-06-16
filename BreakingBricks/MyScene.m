@@ -45,23 +45,6 @@ static const uint32_t edgeCategory      = 0x1 << 3; // 0000000000000000000000000
     // the delegating object that can let us know about these contacts
     // is the Physics World object in our Scene. so added line of code to initWithSize
     
-    
-    // CLUNKY CLODE APPROACH TO DETECT CONTACT BODY THAT WAS A BRICK AND REMOVE FROM SCENE
-    // determine whether bodyA or bodyB was the brick by using two if statements
-    // as it could be bodyA or bodyB (ball / brick)
-//    if (contact.bodyA.categoryBitMask == brickCategory) {
-//        NSLog(@"body A is a brick!");
-//        
-//        // pull it out of the scene
-//        [contact.bodyA.node removeFromParent];
-//    }
-//    if (contact.bodyB.categoryBitMask == brickCategory) {
-//        NSLog(@"body B is a brick!");
-//        
-//        // pull it out of the scene
-//        [contact.bodyB.node removeFromParent];
-//    }
-    
     // create placeholder reference for non-ball object using the value of its constant
     SKPhysicsBody *notTheBall;
     
