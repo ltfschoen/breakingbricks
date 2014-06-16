@@ -60,7 +60,13 @@ static const uint32_t edgeCategory      = 0x1 << 3; // 0000000000000000000000000
     }
     
     if (notTheBall.categoryBitMask == paddleCategory) {
-        NSLog(@"Play boing sound!");
+        //NSLog(@"Play boing sound!");
+        
+        // create the action object and wait for another node in the game to run it (as the action may animate or change the colour of the node)
+        SKAction *playSFX = [SKAction playSoundFileNamed:@"blip.caf" waitForCompletion:NO];
+        
+        // tell the scene to play the sound action
+        [self runAction:playSFX];
     }
     
 }

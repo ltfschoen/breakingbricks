@@ -30,6 +30,9 @@
 		A359AE90194E484800749D37 /* brick@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A359AE8A194E484800749D37 /* brick@2x.png */; };
 		A359AE91194E484800749D37 /* paddle.png in Resources */ = {isa = PBXBuildFile; fileRef = A359AE8B194E484800749D37 /* paddle.png */; };
 		A359AE92194E484800749D37 /* paddle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A359AE8C194E484800749D37 /* paddle@2x.png */; };
+		A359AE97194ECE8200749D37 /* blip.caf in Resources */ = {isa = PBXBuildFile; fileRef = A359AE94194ECE8200749D37 /* blip.caf */; };
+		A359AE98194ECE8200749D37 /* brickhit.caf in Resources */ = {isa = PBXBuildFile; fileRef = A359AE95194ECE8200749D37 /* brickhit.caf */; };
+		A359AE99194ECE8200749D37 /* gameover.caf in Resources */ = {isa = PBXBuildFile; fileRef = A359AE96194ECE8200749D37 /* gameover.caf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +75,9 @@
 		A359AE8A194E484800749D37 /* brick@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "brick@2x.png"; path = "BreakingBricks/brick@2x.png"; sourceTree = "<group>"; };
 		A359AE8B194E484800749D37 /* paddle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = paddle.png; path = BreakingBricks/paddle.png; sourceTree = "<group>"; };
 		A359AE8C194E484800749D37 /* paddle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "paddle@2x.png"; path = "BreakingBricks/paddle@2x.png"; sourceTree = "<group>"; };
+		A359AE94194ECE8200749D37 /* blip.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = blip.caf; sourceTree = "<group>"; };
+		A359AE95194ECE8200749D37 /* brickhit.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = brickhit.caf; sourceTree = "<group>"; };
+		A359AE96194ECE8200749D37 /* gameover.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = gameover.caf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +186,9 @@
 		A359AE93194E487D00749D37 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				A359AE94194ECE8200749D37 /* blip.caf */,
+				A359AE95194ECE8200749D37 /* brickhit.caf */,
+				A359AE96194ECE8200749D37 /* gameover.caf */,
 				A359AE87194E484800749D37 /* ball.png */,
 				A359AE88194E484800749D37 /* ball@2x.png */,
 				A359AE89194E484800749D37 /* brick.png */,
@@ -268,11 +277,14 @@
 			files = (
 				A359AE58194E47DB00749D37 /* InfoPlist.strings in Resources */,
 				A359AE8E194E484800749D37 /* ball@2x.png in Resources */,
+				A359AE97194ECE8200749D37 /* blip.caf in Resources */,
 				A359AE8F194E484800749D37 /* brick.png in Resources */,
 				A359AE8D194E484800749D37 /* ball.png in Resources */,
 				A359AE91194E484800749D37 /* paddle.png in Resources */,
+				A359AE99194ECE8200749D37 /* gameover.caf in Resources */,
 				A359AE90194E484800749D37 /* brick@2x.png in Resources */,
 				A359AE92194E484800749D37 /* paddle@2x.png in Resources */,
+				A359AE98194ECE8200749D37 /* brickhit.caf in Resources */,
 				A359AE6B194E47DB00749D37 /* Images.xcassets in Resources */,
 				A359AE69194E47DB00749D37 /* Spaceship.png in Resources */,
 				A359AE61194E47DB00749D37 /* Main.storyboard in Resources */,
