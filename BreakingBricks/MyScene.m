@@ -22,7 +22,7 @@
         // change gravity settings of the physics world
         // default of simulated earth gravity of 9.82ms^2
         // modified to the moon of 1.6ms^2 by pull down on y-axis
-        self.physicsWorld.gravity = CGVectorMake(0, -1.6);
+        self.physicsWorld.gravity = CGVectorMake(0, 0);
         
         
         // create new sprite node from image
