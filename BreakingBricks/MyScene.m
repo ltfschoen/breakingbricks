@@ -17,6 +17,19 @@
 
 @end
 
+// define categories to be constant and static across the scene class
+// unsigned integers. only allowed 32 categories in Sprite Kit
+//static const uint32_t ballCategory      = 1; // 00000000000000000000000000000001
+//static const uint32_t bricksCategory     = 2; // 00000000000000000000000000000010
+//static const uint32_t paddleCategory    = 4; // 00000000000000000000000000000100
+//static const uint32_t edgeCategory      = 8; // 00000000000000000000000000001000
+
+// safer to use bitwise operators. takes flipped bits and moves to the left
+static const uint32_t ballCategory      = 0x1;      // 00000000000000000000000000000001
+static const uint32_t bricksCategory    = 0x1 << 1; // 00000000000000000000000000000010
+static const uint32_t paddleCategory    = 0x1 << 2; // 00000000000000000000000000000100
+static const uint32_t edgeCategory      = 0x1 << 3; // 00000000000000000000000000001000
+
 @implementation MyScene
 
 - (void)addBall:(CGSize)size {
@@ -31,10 +44,13 @@
     // convenience method adds to Physics Body Property of Node
     ball.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:ball.frame.size.width/2];
     
-    // modify friction Settings
+    // modify physics body friction Settings
     ball.physicsBody.friction = 0;
     ball.physicsBody.linearDamping = 0; // 0.1 by default
     ball.physicsBody.restitution = 1.0f;
+    
+    // add physics body to category
+    ball.physicsBody.categoryBitMask = ballCategory;
     
     // add sprite node to scene
     NSLog(@"%@", ball);
@@ -57,11 +73,14 @@
         brick.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:brick.frame.size];
         brick.physicsBody.dynamic = NO;
         
+        // add physics body to category
+        brick.physicsBody.categoryBitMask = bricksCategory;
+        
         // set position of brick sprites evenly aligned across the top of the scene
         // for 4 OFF centred lines
         int xPos = size.width/5 * (i+1); // divide with of screen by 5
         int yPos = size.height - 50; // same y-position
-        brick.position = CGPointMake(xPos, xPos);
+        brick.position = CGPointMake(xPos, yPos);
         
         // add brick sprite to the scene
         [self addChild:brick];
@@ -96,6 +115,7 @@
     }
 }
 
+// use self. for paddle as its @property is defined
 -(void)addPlayer:(CGSize)size {
     // create a new sprite node named paddle (auto applies retina)
     self.paddle = [SKSpriteNode spriteNodeWithImageNamed:@"paddle"];
@@ -108,6 +128,9 @@
     
     // make it static (change from default dynamic) so it does not move
     self.paddle.physicsBody.dynamic = NO;
+    
+    // add physics body to category
+    self.paddle.physicsBody.categoryBitMask = paddleCategory;
     
     // add paddle property to the scene to make it visible
     [self addChild:self.paddle];
@@ -124,6 +147,10 @@
         
         // add physics body to scene to serve as an invisible boundary
         self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
+        
+        
+        // add physics body to category
+        self.physicsBody.categoryBitMask = edgeCategory;
         
         // change gravity settings of the physics world
         // default of simulated earth gravity of 9.82ms^2
