@@ -46,6 +46,28 @@
     [ball.physicsBody applyImpulse:myVector];
 }
 
+-(void)addBricks:(CGSize) size {
+    // loop to create 4 OFF bricks
+    for (int i = 0; i < 4; i++) {
+        // instantiate a new Sprite Node object
+        SKSpriteNode *brick = [SKSpriteNode spriteNodeWithImageNamed:@"brick"];
+        
+        // add Static Volume-based Physics Body to attach it to Physics World
+        // configure Static so it does not move around
+        brick.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:brick.frame.size];
+        brick.physicsBody.dynamic = NO;
+        
+        // set position of brick sprites evenly aligned across the top of the scene
+        // for 4 OFF centred lines
+        int xPos = size.width/5 * (i+1); // divide with of screen by 5
+        int yPos = size.height - 50; // same y-position
+        brick.position = CGPointMake(xPos, xPos);
+        
+        // add brick sprite to the scene
+        [self addChild:brick];
+    }
+}
+
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     for (UITouch *touch in touches) {
         // get a specific touch location and details of it
@@ -113,6 +135,9 @@
         
         // call addPlayer method to create, configure, and add the player object to the scene
         [self addPlayer:size];
+        
+        // call addBricks method to create, configure, and add the bricks objects to the scene
+        [self addBricks:size];
         
     }
     return self;
