@@ -267,7 +267,7 @@ BOOL touchingPaddle;
     self.paddle = [SKSpriteNode spriteNodeWithImageNamed:@"paddle"];
     
     // position it by grab size parameter
-    self.paddle.position = CGPointMake(size.width/2, 100);
+    self.paddle.position = CGPointMake(size.width/2, 150);
     
     // add a volume-based physics body taking up space on the scene
     self.paddle.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:self.paddle.frame.size];
@@ -355,6 +355,12 @@ BOOL touchingPaddle;
 
 -(void)update:(CFTimeInterval)currentTime {
     /* Called before each frame is rendered */
+    
+    // apply upwards force
+    if (touchingPaddle) {
+        [self.paddle.physicsBody applyForce:CGVectorMake(0, 150)];
+        // applyImpulse or applyForce alternative
+    }
 }
 
 @end
