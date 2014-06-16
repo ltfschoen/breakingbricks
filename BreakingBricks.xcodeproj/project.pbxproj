@@ -24,6 +24,12 @@
 		A359AE74194E47DB00749D37 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A359AE4F194E47DA00749D37 /* UIKit.framework */; };
 		A359AE7C194E47DB00749D37 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A359AE7A194E47DB00749D37 /* InfoPlist.strings */; };
 		A359AE7E194E47DB00749D37 /* BreakingBricksTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A359AE7D194E47DB00749D37 /* BreakingBricksTests.m */; };
+		A359AE8D194E484800749D37 /* ball.png in Resources */ = {isa = PBXBuildFile; fileRef = A359AE87194E484800749D37 /* ball.png */; };
+		A359AE8E194E484800749D37 /* ball@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A359AE88194E484800749D37 /* ball@2x.png */; };
+		A359AE8F194E484800749D37 /* brick.png in Resources */ = {isa = PBXBuildFile; fileRef = A359AE89194E484800749D37 /* brick.png */; };
+		A359AE90194E484800749D37 /* brick@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A359AE8A194E484800749D37 /* brick@2x.png */; };
+		A359AE91194E484800749D37 /* paddle.png in Resources */ = {isa = PBXBuildFile; fileRef = A359AE8B194E484800749D37 /* paddle.png */; };
+		A359AE92194E484800749D37 /* paddle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A359AE8C194E484800749D37 /* paddle@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +66,12 @@
 		A359AE79194E47DB00749D37 /* BreakingBricksTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BreakingBricksTests-Info.plist"; sourceTree = "<group>"; };
 		A359AE7B194E47DB00749D37 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A359AE7D194E47DB00749D37 /* BreakingBricksTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BreakingBricksTests.m; sourceTree = "<group>"; };
+		A359AE87194E484800749D37 /* ball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ball.png; path = BreakingBricks/ball.png; sourceTree = "<group>"; };
+		A359AE88194E484800749D37 /* ball@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ball@2x.png"; path = "BreakingBricks/ball@2x.png"; sourceTree = "<group>"; };
+		A359AE89194E484800749D37 /* brick.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = brick.png; path = BreakingBricks/brick.png; sourceTree = "<group>"; };
+		A359AE8A194E484800749D37 /* brick@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "brick@2x.png"; path = "BreakingBricks/brick@2x.png"; sourceTree = "<group>"; };
+		A359AE8B194E484800749D37 /* paddle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = paddle.png; path = BreakingBricks/paddle.png; sourceTree = "<group>"; };
+		A359AE8C194E484800749D37 /* paddle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "paddle@2x.png"; path = "BreakingBricks/paddle@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +102,7 @@
 		A359AE3F194E47DA00749D37 = {
 			isa = PBXGroup;
 			children = (
+				A359AE93194E487D00749D37 /* Assets */,
 				A359AE53194E47DA00749D37 /* BreakingBricks */,
 				A359AE77194E47DB00749D37 /* BreakingBricksTests */,
 				A359AE4A194E47DA00749D37 /* Frameworks */,
@@ -162,6 +175,19 @@
 				A359AE7A194E47DB00749D37 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A359AE93194E487D00749D37 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				A359AE87194E484800749D37 /* ball.png */,
+				A359AE88194E484800749D37 /* ball@2x.png */,
+				A359AE89194E484800749D37 /* brick.png */,
+				A359AE8A194E484800749D37 /* brick@2x.png */,
+				A359AE8B194E484800749D37 /* paddle.png */,
+				A359AE8C194E484800749D37 /* paddle@2x.png */,
+			);
+			name = Assets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -241,6 +267,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				A359AE58194E47DB00749D37 /* InfoPlist.strings in Resources */,
+				A359AE8E194E484800749D37 /* ball@2x.png in Resources */,
+				A359AE8F194E484800749D37 /* brick.png in Resources */,
+				A359AE8D194E484800749D37 /* ball.png in Resources */,
+				A359AE91194E484800749D37 /* paddle.png in Resources */,
+				A359AE90194E484800749D37 /* brick@2x.png in Resources */,
+				A359AE92194E484800749D37 /* paddle@2x.png in Resources */,
 				A359AE6B194E47DB00749D37 /* Images.xcassets in Resources */,
 				A359AE69194E47DB00749D37 /* Spaceship.png in Resources */,
 				A359AE61194E47DB00749D37 /* Main.storyboard in Resources */,
