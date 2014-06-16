@@ -42,7 +42,7 @@
     
     // create and define vector as separate variable
     // apply vector impulse to node ball object
-    CGVector myVector = CGVectorMake(20, 20); // simple C Struct so no pointer for variable name required with two floats converted to a Vector value at 45 degrees of a magnitude
+    CGVector myVector = CGVectorMake(5, 5); // simple C Struct so no pointer for variable name required with two floats converted to a Vector value at 45 degrees of a magnitude
     [ball.physicsBody applyImpulse:myVector];
 }
 
@@ -60,11 +60,13 @@
         CGPoint newPosition = CGPointMake(location.x, 100);
         
         // stop paddle from going too far with constraints before setting paddle
-        if (newPosition.x < 50) {
-            newPosition.x = 50;
+        // condition of half width of paddle (100/2=50)
+        if (newPosition.x < self.paddle.size.width / 2) {
+            newPosition.x = self.paddle.size.width / 2;
         }
-        if (newPosition.x > 270) {
-            newPosition.x = 270;
+        // condition of width of screen minus half width of paddle (320-(100/2)=270)
+        if (newPosition.x > self.size.width - (self.paddle.size.width / 2)) {
+            newPosition.x = self.size.width - (self.paddle.size.width / 2);
         }
         
         // change the position of the paddle object to new position
