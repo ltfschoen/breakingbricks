@@ -15,7 +15,8 @@
 
 @property (nonatomic, strong) SKSpriteNode *paddle;
 
-@property (nonatomic, strong) SKAction *playSFX;
+@property (nonatomic, strong) SKAction *playSFXPaddle;
+@property (nonatomic, strong) SKAction *playSFXBrick;
 
 @end
 
@@ -58,6 +59,9 @@ static const uint32_t edgeCategory      = 0x1 << 3; // 0000000000000000000000000
     
     if (notTheBall.categoryBitMask == brickCategory) {
         NSLog(@"It's a brick!");
+        
+        [self runAction:self.playSFXBrick];
+        
         [notTheBall.node removeFromParent];
     }
     
@@ -65,7 +69,7 @@ static const uint32_t edgeCategory      = 0x1 << 3; // 0000000000000000000000000
         //NSLog(@"Play boing sound!");
         
         // tell the scene to play the sound action
-        [self runAction:self.playSFX];
+        [self runAction:self.playSFXPaddle];
     }
     
 }
@@ -215,8 +219,10 @@ static const uint32_t edgeCategory      = 0x1 << 3; // 0000000000000000000000000
         [self addBricks:size];
         
         // create the action object and wait for another node in the game to run it (as the action may animate or change the colour of the node)
-        self.playSFX = [[SKAction alloc] init];
-        self.playSFX = [SKAction playSoundFileNamed:@"blip.caf" waitForCompletion:NO];
+        self.playSFXPaddle = [[SKAction alloc] init];
+        self.playSFXBrick = [[SKAction alloc] init];
+        self.playSFXPaddle = [SKAction playSoundFileNamed:@"blip.caf" waitForCompletion:NO];
+        self.playSFXBrick = [SKAction playSoundFileNamed:@"brickhit.caf" waitForCompletion:NO];
     }
     return self;
 }
