@@ -32,6 +32,7 @@ static const uint32_t ballCategory      = 0x1;      // 0000000000000000000000000
 static const uint32_t brickCategory    = 0x1 << 1; // 00000000000000000000000000000010
 static const uint32_t paddleCategory    = 0x1 << 2; // 00000000000000000000000000000100
 static const uint32_t edgeCategory      = 0x1 << 3; // 00000000000000000000000000001000
+static const uint32_t bottomEdgeCategory = 0x1 << 4;
 
 @implementation MyScene
 
@@ -57,6 +58,7 @@ static const uint32_t edgeCategory      = 0x1 << 3; // 0000000000000000000000000
         notTheBall = contact.bodyA;
     }
     
+    // test to see if we are touching a brick
     if (notTheBall.categoryBitMask == brickCategory) {
         NSLog(@"It's a brick!");
         
@@ -65,6 +67,7 @@ static const uint32_t edgeCategory      = 0x1 << 3; // 0000000000000000000000000
         [notTheBall.node removeFromParent];
     }
     
+    // test to see if we are touching a paddle
     if (notTheBall.categoryBitMask == paddleCategory) {
         //NSLog(@"Play boing sound!");
         
@@ -72,9 +75,35 @@ static const uint32_t edgeCategory      = 0x1 << 3; // 0000000000000000000000000
         [self runAction:self.playSFXPaddle];
     }
     
+    // test to see if we are touching the bottom edge
+    if (notTheBall.categoryBitMask == bottomEdgeCategory) {
+        SKLabelNode *label = [SKLabelNode labelNodeWithFontNamed:@"Futura Medium"];
+        label.text = @"YOU LOSE!";
+        label.fontColor = [SKColor blackColor];
+        label.fontSize = 50;
+        label.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
+        [self addChild:label];
+        
+    }
+    
 }
 
-
+// method with size parameter to tell us the size of the scene when it is called
+- (void)addBottomEdge:(CGSize)size {
+    
+    // add Edge-based Physics Body
+    // instead of adding to an existing Node
+    // (as we already have a Physics Body for the Scene)
+    // and instead of adding a new Sprite or Label Node unnecessarily
+    // create a Generic SKNode object
+    // (will not have visible contents. acts as invisible container)
+    // it also has a place for a Physics Body
+    SKNode *bottomEdge = [SKNode node];
+    bottomEdge.physicsBody = [SKPhysicsBody bodyWithEdgeFromPoint:CGPointMake(0, 1) toPoint:CGPointMake(size.width, 1)];
+    bottomEdge.physicsBody.categoryBitMask = bottomEdgeCategory;
+    [self addChild:bottomEdge];
+    
+}
 
 - (void)addBall:(CGSize)size {
     // create new sprite node from image
@@ -97,7 +126,7 @@ static const uint32_t edgeCategory      = 0x1 << 3; // 0000000000000000000000000
     ball.physicsBody.categoryBitMask = ballCategory; // currently in
     
     // add a different physics body 'brick' to contact test bitmask
-    ball.physicsBody.contactTestBitMask = brickCategory | paddleCategory; // want to be notified when current category touches this other category. using a logical OR (so it flips if either of the categories contacted)
+    ball.physicsBody.contactTestBitMask = brickCategory | paddleCategory | bottomEdgeCategory; // want to be notified when current category touches this other category. using a logical OR (so it flips if either of the categories contacted)
     ball.physicsBody.collisionBitMask = edgeCategory | brickCategory | paddleCategory; // collide only with these
     
     // add sprite node to scene
@@ -217,6 +246,8 @@ static const uint32_t edgeCategory      = 0x1 << 3; // 0000000000000000000000000
         
         // call addBricks method to create, configure, and add the bricks objects to the scene
         [self addBricks:size];
+        
+        [self addBottomEdge:size];
         
         // create the action object and wait for another node in the game to run it (as the action may animate or change the colour of the node)
         self.playSFXPaddle = [[SKAction alloc] init];
