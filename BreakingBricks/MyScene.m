@@ -8,6 +8,15 @@
 
 #import "MyScene.h"
 
+// add wider reference to access addPlayer for when react later to touches
+// with a Class Extension to the implementation and property added
+
+@interface MyScene ()
+
+@property (nonatomic, strong) SKSpriteNode *paddle;
+
+@end
+
 @implementation MyScene
 
 - (void)addBall:(CGSize)size {
@@ -37,6 +46,25 @@
     [ball.physicsBody applyImpulse:myVector];
 }
 
+-(void)addPlayer:(CGSize)size {
+    // create a new sprite node named paddle (auto applies retina)
+    self.paddle = [SKSpriteNode spriteNodeWithImageNamed:@"paddle"];
+    
+    // position it by grab size parameter
+    self.paddle.position = CGPointMake(size.width/2, 100);
+    
+    // add a volume-based physics body taking up space on the scene
+    self.paddle.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:self.paddle.frame.size];
+    
+    // make it static (change from default dynamic) so it does not move
+    self.paddle.physicsBody.dynamic = NO;
+    
+    // add paddle property to the scene to make it visible
+    [self addChild:self.paddle];
+    
+}
+
+
 // scene initialiser and setting properties
 -(id)initWithSize:(CGSize)size {    
     if (self = [super initWithSize:size]) {
@@ -54,6 +82,9 @@
         
         // call addBall method to create, configure, and add the ball object to the scene
         [self addBall:size];
+        
+        // call addPlayer method to create, configure, and add the player object to the scene
+        [self addPlayer:size];
         
     }
     return self;
