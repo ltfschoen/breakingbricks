@@ -46,6 +46,32 @@
     [ball.physicsBody applyImpulse:myVector];
 }
 
+-(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    for (UITouch *touch in touches) {
+        // get a specific touch location and details of it
+        // coordination system orientation we are interested in
+        // is the touch point on the Scene (hence we use 'self')
+        // to refer to the Current Scene with (0,0) point at bottom left
+        CGPoint location = [touch locationInNode:self];
+        
+        // create a new CGPoint object to set the new position
+        // grab the x position of the touch location
+        // use same value for y position so it paddle object stays constrained
+        CGPoint newPosition = CGPointMake(location.x, 100);
+        
+        // stop paddle from going too far with constraints before setting paddle
+        if (newPosition.x < 50) {
+            newPosition.x = 50;
+        }
+        if (newPosition.x > 270) {
+            newPosition.x = 270;
+        }
+        
+        // change the position of the paddle object to new position
+        self.paddle.position = newPosition;
+    }
+}
+
 -(void)addPlayer:(CGSize)size {
     // create a new sprite node named paddle (auto applies retina)
     self.paddle = [SKSpriteNode spriteNodeWithImageNamed:@"paddle"];
