@@ -20,13 +20,13 @@
 // define categories to be constant and static across the scene class
 // unsigned integers. only allowed 32 categories in Sprite Kit
 //static const uint32_t ballCategory      = 1; // 00000000000000000000000000000001
-//static const uint32_t bricksCategory     = 2; // 00000000000000000000000000000010
+//static const uint32_t brickCategory     = 2; // 00000000000000000000000000000010
 //static const uint32_t paddleCategory    = 4; // 00000000000000000000000000000100
 //static const uint32_t edgeCategory      = 8; // 00000000000000000000000000001000
 
 // safer to use bitwise operators. takes flipped bits and moves to the left
 static const uint32_t ballCategory      = 0x1;      // 00000000000000000000000000000001
-static const uint32_t bricksCategory    = 0x1 << 1; // 00000000000000000000000000000010
+static const uint32_t brickCategory    = 0x1 << 1; // 00000000000000000000000000000010
 static const uint32_t paddleCategory    = 0x1 << 2; // 00000000000000000000000000000100
 static const uint32_t edgeCategory      = 0x1 << 3; // 00000000000000000000000000001000
 
@@ -50,7 +50,11 @@ static const uint32_t edgeCategory      = 0x1 << 3; // 0000000000000000000000000
     ball.physicsBody.restitution = 1.0f;
     
     // add physics body to category
-    ball.physicsBody.categoryBitMask = ballCategory;
+    ball.physicsBody.categoryBitMask = ballCategory; // currently in
+    
+    // add a different physics body 'brick' to contact test bitmask
+    ball.physicsBody.contactTestBitMask = brickCategory | paddleCategory; // want to be notified when current category touches this other category. using a logical OR (so it flips if either of the categories contacted)
+    ball.physicsBody.collisionBitMask = edgeCategory | brickCategory | paddleCategory; // collide only with these
     
     // add sprite node to scene
     NSLog(@"%@", ball);
@@ -74,7 +78,7 @@ static const uint32_t edgeCategory      = 0x1 << 3; // 0000000000000000000000000
         brick.physicsBody.dynamic = NO;
         
         // add physics body to category
-        brick.physicsBody.categoryBitMask = bricksCategory;
+        brick.physicsBody.categoryBitMask = brickCategory;
         
         // set position of brick sprites evenly aligned across the top of the scene
         // for 4 OFF centred lines
