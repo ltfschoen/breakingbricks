@@ -17,7 +17,7 @@
         self.backgroundColor = [SKColor blackColor];
         
         // play game over sound
-        SKAction *playSoundEnd = [SKAction playSoundFileNamed:@"gameover.caf" waitForCompletion:NO];
+        SKAction *playSoundEnd = [SKAction playSoundFileNamed:@"youlose.caf" waitForCompletion:NO];
         [self runAction:playSoundEnd];
         
         SKLabelNode *label = [SKLabelNode labelNodeWithFontNamed:@"Futura Medium"];

@@ -168,6 +168,28 @@ static const uint32_t bottomEdgeCategory = 0x1 << 4;
         // add brick sprite to the scene
         [self addChild:brick];
     }
+    
+    for (int i = 0; i < 6; i++) {
+        // instantiate a new Sprite Node object
+        SKSpriteNode *brick = [SKSpriteNode spriteNodeWithImageNamed:@"brick"];
+        
+        // add Static Volume-based Physics Body to attach it to Physics World
+        // configure Static so it does not move around
+        brick.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:brick.frame.size];
+        brick.physicsBody.dynamic = NO;
+        
+        // add physics body to category
+        brick.physicsBody.categoryBitMask = brickCategory;
+        
+        // set position of brick sprites evenly aligned across the top of the scene
+        // for 4 OFF centred lines
+        int xPos = size.width/7 * (i+1); // divide with of screen by 5
+        int yPos = size.height - 100; // same y-position
+        brick.position = CGPointMake(xPos, yPos);
+        
+        // add brick sprite to the scene
+        [self addChild:brick];
+    }
 }
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -226,7 +248,21 @@ static const uint32_t bottomEdgeCategory = 0x1 << 4;
     if (self = [super initWithSize:size]) {
         /* Setup your scene here */
         
-        self.backgroundColor = [SKColor whiteColor];
+        self.backgroundColor = [SKColor colorWithRed:0.15 green:0.15 blue:0.3 alpha:0.8];
+        
+        // unarchive SKS file into this object with all default settings
+        SKEmitterNode *snow = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"luke_schoen" ofType:@"sks"]];
+        
+        // set its position at middle top of screen
+        snow.position = CGPointMake(size.width/2, size.height);
+        
+        // advance the simulation of the particle effect
+        // to appear as if has already been running for 10 seconds
+        //[snow advanceSimulationTime:10];
+        
+        
+        // add to scene
+        [self addChild:snow];
         
         // add physics body to scene to serve as an invisible boundary
         self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
