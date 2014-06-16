@@ -32,6 +32,58 @@ static const uint32_t edgeCategory      = 0x1 << 3; // 0000000000000000000000000
 
 @implementation MyScene
 
+// delegate method code of SKPhysicsContactDelegate
+// Physics World object calls this method whenever two objects detected as having contacted.
+// only if valid contact Bitmask defined for these objects (otherwise this method not called)
+// parameter called 'contact' passed into this method, which contains references to both
+// Physics Bodies that just touched
+-(void)didBeginContact:(SKPhysicsContact *)contact {
+    //NSLog(@"boing!");
+    
+    // to work we inform the delegating object that is going on in the background
+    // that it should look to this didBeginContact method to handle this
+    // the delegating object that can let us know about these contacts
+    // is the Physics World object in our Scene. so added line of code to initWithSize
+    
+    
+    // CLUNKY CLODE APPROACH TO DETECT CONTACT BODY THAT WAS A BRICK AND REMOVE FROM SCENE
+    // determine whether bodyA or bodyB was the brick by using two if statements
+    // as it could be bodyA or bodyB (ball / brick)
+//    if (contact.bodyA.categoryBitMask == brickCategory) {
+//        NSLog(@"body A is a brick!");
+//        
+//        // pull it out of the scene
+//        [contact.bodyA.node removeFromParent];
+//    }
+//    if (contact.bodyB.categoryBitMask == brickCategory) {
+//        NSLog(@"body B is a brick!");
+//        
+//        // pull it out of the scene
+//        [contact.bodyB.node removeFromParent];
+//    }
+    
+    // create placeholder reference for non-ball object using the value of its constant
+    SKPhysicsBody *notTheBall;
+    
+    if (contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask) {
+        notTheBall = contact.bodyB;
+    } else {
+        notTheBall = contact.bodyA;
+    }
+    
+    if (notTheBall.categoryBitMask == brickCategory) {
+        NSLog(@"It's a brick!");
+        [notTheBall.node removeFromParent];
+    }
+    
+    if (notTheBall.categoryBitMask == paddleCategory) {
+        NSLog(@"Play boing sound!");
+    }
+    
+}
+
+
+
 - (void)addBall:(CGSize)size {
     // create new sprite node from image
     SKSpriteNode *ball = [SKSpriteNode spriteNodeWithImageNamed:@"ball"];
@@ -160,6 +212,10 @@ static const uint32_t edgeCategory      = 0x1 << 3; // 0000000000000000000000000
         // default of simulated earth gravity of 9.82ms^2
         // modified to the moon of 1.6ms^2 by pull down on y-axis
         self.physicsWorld.gravity = CGVectorMake(0, 0);
+        
+        // tell delegating object of Physics World to look back into this same class for the
+        // methods didBeginContact or didEndContact
+        self.physicsWorld.contactDelegate = self;
         
         // call addBall method to create, configure, and add the ball object to the scene
         [self addBall:size];
