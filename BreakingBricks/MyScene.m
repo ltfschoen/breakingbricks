@@ -15,6 +15,8 @@
 
 @property (nonatomic, strong) SKSpriteNode *paddle;
 
+@property (nonatomic, strong) SKAction *playSFX;
+
 @end
 
 // define categories to be constant and static across the scene class
@@ -62,11 +64,8 @@ static const uint32_t edgeCategory      = 0x1 << 3; // 0000000000000000000000000
     if (notTheBall.categoryBitMask == paddleCategory) {
         //NSLog(@"Play boing sound!");
         
-        // create the action object and wait for another node in the game to run it (as the action may animate or change the colour of the node)
-        SKAction *playSFX = [SKAction playSoundFileNamed:@"blip.caf" waitForCompletion:NO];
-        
         // tell the scene to play the sound action
-        [self runAction:playSFX];
+        [self runAction:self.playSFX];
     }
     
 }
@@ -215,6 +214,9 @@ static const uint32_t edgeCategory      = 0x1 << 3; // 0000000000000000000000000
         // call addBricks method to create, configure, and add the bricks objects to the scene
         [self addBricks:size];
         
+        // create the action object and wait for another node in the game to run it (as the action may animate or change the colour of the node)
+        self.playSFX = [[SKAction alloc] init];
+        self.playSFX = [SKAction playSoundFileNamed:@"blip.caf" waitForCompletion:NO];
     }
     return self;
 }
