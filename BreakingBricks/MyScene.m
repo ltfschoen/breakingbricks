@@ -77,11 +77,26 @@ static const uint32_t bottomEdgeCategory = 0x1 << 4;
     
     // test to see if we are touching the bottom edge
     if (notTheBall.categoryBitMask == bottomEdgeCategory) {
+        
         SKLabelNode *label = [SKLabelNode labelNodeWithFontNamed:@"Futura Medium"];
         label.text = @"YOU LOSE!";
         label.fontColor = [SKColor blackColor];
         label.fontSize = 50;
+        label.color = [SKColor redColor];
+        label.colorBlendFactor = 0.5;
         label.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
+        
+        SKLabelNode *shadow = [[SKLabelNode alloc] init];
+        shadow.text = @"YOU LOSE";
+        shadow.fontColor = [SKColor redColor];
+        shadow.fontSize = 50;
+        shadow.blendMode = SKBlendModeAlpha;
+        [shadow setAlpha:0.7];
+        shadow.position = CGPointMake(CGRectGetMidX(self.frame) + 2, CGRectGetMidY(self.frame) - 4);
+        shadow.zPosition = -1;
+        
+        [self addChild:shadow];
+        
         [self addChild:label];
         
     }
