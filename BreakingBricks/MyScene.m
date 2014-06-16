@@ -282,9 +282,9 @@ BOOL touchingPaddle;
     self.paddle.physicsBody.contactTestBitMask = bottomEdgeCategory; // want to be notified when current category touches this other category. using a logical OR (so it flips if either of the categories contacted)
     
     // modify physics body friction Settings (specifically to react if paddle hits bottom edge
-    self.paddle.physicsBody.friction = 0.5;
-    self.paddle.physicsBody.linearDamping = 0.1; // 0.1 by default
-    self.paddle.physicsBody.restitution = 0.1f;
+//    self.paddle.physicsBody.friction = 0.5;
+//    self.paddle.physicsBody.linearDamping = 0.1; // 0.1 by default
+//    self.paddle.physicsBody.restitution = 0.1f;
     
     //self.paddle.physicsBody.collisionBitMask = edgeCategory | brickCategory | paddleCategory; // collide only with these (i.e. if ball is not mentioned then it would bounce when they collide)
     
