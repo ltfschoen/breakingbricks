@@ -15,6 +15,7 @@
 @interface MyScene ()
 
 @property (nonatomic, strong) SKSpriteNode *paddle;
+@property (nonatomic, strong) SKEmitterNode *paddleEngine; // allow reference throughout the scene
 
 @property (nonatomic, strong) SKAction *playSFXPaddle;
 @property (nonatomic, strong) SKAction *playSFXBrick;
@@ -63,14 +64,14 @@ BOOL touchingPaddle;
     
     // game over if paddle hits edge scene at bottom
     if (contact.bodyA.categoryBitMask == bottomEdgeCategory && contact.bodyB.categoryBitMask == paddleCategory) {
-        NSLog(@"paddle fallen!");
+        NSLog(@"paddle hit bottom of screen, you die!");
             
         EndScene *end = [EndScene sceneWithSize:self.size];
             
         [self.view presentScene:end transition:[SKTransition fadeWithColor:[UIColor yellowColor] duration:1.0]];
     }
     if (contact.bodyA.categoryBitMask == paddleCategory && contact.bodyB.categoryBitMask == bottomEdgeCategory) {
-        NSLog(@"paddle fallen!");
+        NSLog(@"paddle hit bottom of screen, you die!");
             
         EndScene *end = [EndScene sceneWithSize:self.size];
             
@@ -273,7 +274,7 @@ BOOL touchingPaddle;
     self.paddle.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:self.paddle.frame.size];
     
     // make it static (change from default dynamic) so it does not move
-    self.paddle.physicsBody.dynamic = NO;
+    self.paddle.physicsBody.dynamic = YES;
     
     // add physics body to category
     self.paddle.physicsBody.categoryBitMask = paddleCategory;
@@ -286,7 +287,7 @@ BOOL touchingPaddle;
 //    self.paddle.physicsBody.linearDamping = 0.1; // 0.1 by default
 //    self.paddle.physicsBody.restitution = 0.1f;
     
-    //self.paddle.physicsBody.collisionBitMask = edgeCategory | brickCategory | paddleCategory; // collide only with these (i.e. if ball is not mentioned then it would bounce when they collide)
+    self.paddle.physicsBody.collisionBitMask = edgeCategory | brickCategory | paddleCategory; // collide only with these (i.e. if ball is not mentioned then it would bounce when they collide)
     
     // add paddle property to the scene to make it visible
     [self addChild:self.paddle];
@@ -313,13 +314,24 @@ BOOL touchingPaddle;
         // to appear as if has already been running for 10 seconds
         //[snow advanceSimulationTime:10];
         
-        
         // add to scene
         [self addChild:snow];
         
+        // add particle emitter paddle engine
+        // recreates the object with settings
+        self.paddleEngine = [[SKEmitterNode alloc] init];
+        
+        self.paddleEngine = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"PaddleEngine" ofType:@"sks"]];
+        
+        // add the paddleEngine to Parent of paddle
+        // set position relative to centrepoint of paddle
+        // paddleEngine inherits settings (i.e. scales down)
+        self.paddleEngine.position = CGPointMake(0, -10);
+        self.paddleEngine.zPosition = 20;
+        // add paddleEngine after addPaddle, where paddle created, shown further below
+        
         // add physics body to scene to serve as an invisible boundary
         self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
-        
         
         // add physics body to category
         self.physicsBody.categoryBitMask = edgeCategory;
@@ -338,6 +350,7 @@ BOOL touchingPaddle;
         
         // call addPlayer method to create, configure, and add the player object to the scene
         [self addPlayer:size];
+        [self.paddle addChild:self.paddleEngine];
         
         // call addBricks method to create, configure, and add the bricks objects to the scene
         [self addBricks:size];

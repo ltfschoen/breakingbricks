@@ -36,6 +36,8 @@
 		A359AE9E194EF7F900749D37 /* youlose.caf in Resources */ = {isa = PBXBuildFile; fileRef = A359AE9D194EF7F900749D37 /* youlose.caf */; };
 		A359AEA1194EFF3E00749D37 /* luke_schoen.sks in Resources */ = {isa = PBXBuildFile; fileRef = A359AE9F194EFF3E00749D37 /* luke_schoen.sks */; };
 		A359AEA8194F06C700749D37 /* luke_schoen.png in Resources */ = {isa = PBXBuildFile; fileRef = A359AEA7194F06C700749D37 /* luke_schoen.png */; };
+		A359AEAB194FAF3400749D37 /* PaddleEngine.sks in Resources */ = {isa = PBXBuildFile; fileRef = A359AEA9194FAF3400749D37 /* PaddleEngine.sks */; };
+		A359AEAC194FAF3400749D37 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = A359AEAA194FAF3400749D37 /* spark.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +87,8 @@
 		A359AE9D194EF7F900749D37 /* youlose.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = youlose.caf; sourceTree = "<group>"; };
 		A359AE9F194EFF3E00749D37 /* luke_schoen.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = luke_schoen.sks; sourceTree = "<group>"; };
 		A359AEA7194F06C700749D37 /* luke_schoen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = luke_schoen.png; sourceTree = "<group>"; };
+		A359AEA9194FAF3400749D37 /* PaddleEngine.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; name = PaddleEngine.sks; path = BreakingBricks/PaddleEngine.sks; sourceTree = "<group>"; };
+		A359AEAA194FAF3400749D37 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spark.png; path = BreakingBricks/spark.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -230,6 +234,8 @@
 			children = (
 				A359AEA7194F06C700749D37 /* luke_schoen.png */,
 				A359AE9F194EFF3E00749D37 /* luke_schoen.sks */,
+				A359AEA9194FAF3400749D37 /* PaddleEngine.sks */,
+				A359AEAA194FAF3400749D37 /* spark.png */,
 			);
 			name = Particle;
 			sourceTree = "<group>";
@@ -325,6 +331,8 @@
 				A359AE9E194EF7F900749D37 /* youlose.caf in Resources */,
 				A359AEA1194EFF3E00749D37 /* luke_schoen.sks in Resources */,
 				A359AE61194E47DB00749D37 /* Main.storyboard in Resources */,
+				A359AEAB194FAF3400749D37 /* PaddleEngine.sks in Resources */,
+				A359AEAC194FAF3400749D37 /* spark.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
