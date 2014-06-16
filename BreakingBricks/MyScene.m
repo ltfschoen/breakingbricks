@@ -273,7 +273,7 @@ BOOL touchingPaddle;
     self.paddle.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:self.paddle.frame.size];
     
     // make it static (change from default dynamic) so it does not move
-    self.paddle.physicsBody.dynamic = YES;
+    self.paddle.physicsBody.dynamic = NO;
     
     // add physics body to category
     self.paddle.physicsBody.categoryBitMask = paddleCategory;
