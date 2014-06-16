@@ -7,6 +7,7 @@
 //
 
 #import "MyScene.h"
+#import "EndScene.h"
 
 // add wider reference to access addPlayer for when react later to touches
 // with a Class Extension to the implementation and property added
@@ -78,26 +79,16 @@ static const uint32_t bottomEdgeCategory = 0x1 << 4;
     // test to see if we are touching the bottom edge
     if (notTheBall.categoryBitMask == bottomEdgeCategory) {
         
-        SKLabelNode *label = [SKLabelNode labelNodeWithFontNamed:@"Futura Medium"];
-        label.text = @"YOU LOSE!";
-        label.fontColor = [SKColor blackColor];
-        label.fontSize = 50;
-        label.color = [SKColor redColor];
-        label.colorBlendFactor = 0.5;
-        label.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
+        // create new instance of End Scene object
+        // use convenience method that is available
         
-        SKLabelNode *shadow = [[SKLabelNode alloc] init];
-        shadow.text = @"YOU LOSE";
-        shadow.fontColor = [SKColor redColor];
-        shadow.fontSize = 50;
-        shadow.blendMode = SKBlendModeAlpha;
-        [shadow setAlpha:0.7];
-        shadow.position = CGPointMake(CGRectGetMidX(self.frame) + 2, CGRectGetMidY(self.frame) - 4);
-        shadow.zPosition = -1;
+        //EndScene *end = [[EndScene alloc] init];
+        EndScene *end = [EndScene sceneWithSize:self.size];
         
-        [self addChild:shadow];
+        // tell containing SKView object to present the scene
         
-        [self addChild:label];
+        //[self.view presentScene:end];
+        [self.view presentScene:end transition:[SKTransition fadeWithColor:[UIColor redColor] duration:1.0]];
         
     }
     

@@ -32,6 +32,7 @@
 		A359AE97194ECE8200749D37 /* blip.caf in Resources */ = {isa = PBXBuildFile; fileRef = A359AE94194ECE8200749D37 /* blip.caf */; };
 		A359AE98194ECE8200749D37 /* brickhit.caf in Resources */ = {isa = PBXBuildFile; fileRef = A359AE95194ECE8200749D37 /* brickhit.caf */; };
 		A359AE99194ECE8200749D37 /* gameover.caf in Resources */ = {isa = PBXBuildFile; fileRef = A359AE96194ECE8200749D37 /* gameover.caf */; };
+		A359AE9C194EEBDE00749D37 /* EndScene.m in Sources */ = {isa = PBXBuildFile; fileRef = A359AE9B194EEBDE00749D37 /* EndScene.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +77,8 @@
 		A359AE94194ECE8200749D37 /* blip.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = blip.caf; sourceTree = "<group>"; };
 		A359AE95194ECE8200749D37 /* brickhit.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = brickhit.caf; sourceTree = "<group>"; };
 		A359AE96194ECE8200749D37 /* gameover.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = gameover.caf; sourceTree = "<group>"; };
+		A359AE9A194EEBDE00749D37 /* EndScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EndScene.h; path = ../EndScene.h; sourceTree = "<group>"; };
+		A359AE9B194EEBDE00749D37 /* EndScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EndScene.m; path = ../EndScene.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +148,8 @@
 				A359AE63194E47DB00749D37 /* ViewController.m */,
 				A359AE65194E47DB00749D37 /* MyScene.h */,
 				A359AE66194E47DB00749D37 /* MyScene.m */,
+				A359AE9A194EEBDE00749D37 /* EndScene.h */,
+				A359AE9B194EEBDE00749D37 /* EndScene.m */,
 				A359AE6A194E47DB00749D37 /* Images.xcassets */,
 				A359AE54194E47DB00749D37 /* Supporting Files */,
 			);
@@ -306,6 +311,7 @@
 				A359AE64194E47DB00749D37 /* ViewController.m in Sources */,
 				A359AE5E194E47DB00749D37 /* AppDelegate.m in Sources */,
 				A359AE5A194E47DB00749D37 /* main.m in Sources */,
+				A359AE9C194EEBDE00749D37 /* EndScene.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
