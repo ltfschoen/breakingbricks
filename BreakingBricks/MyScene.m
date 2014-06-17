@@ -367,7 +367,7 @@ BOOL touchingPaddle;
 - (void)addTree:(CGSize)size {
     // add bonus points platform
     SKSpriteNode *trunk = [SKSpriteNode spriteNodeWithColor:[SKColor brownColor] size:CGSizeMake(200, 10)];
-    trunk.position = CGPointMake(0, size.height - size.height/20);
+    trunk.position = CGPointMake(0, size.height - size.height/10);
     // add a volume-based physics body taking up space on the scene
     trunk.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:trunk.frame.size];
     
@@ -403,9 +403,24 @@ BOOL touchingPaddle;
     
     // throw the tree onto the bricks at the start
     //SKAction *move = [SKAction moveBy:CGVectorMake(0.1, 10) duration:1.0];
-    SKAction *move = [SKAction moveTo:CGPointMake(size.width/2, size.height - size.height/30) duration:4.0];
+//    SKAction *move = [SKAction moveTo:CGPointMake(size.width/2, size.height - size.height/30) duration:4.0];
+    SKAction *move = [SKAction moveByX:(size.width/4) y:-0.1 duration:5.0];
     [trunk runAction:move];
-
+    
+    SKAction *moveBackSlightly = [SKAction moveByX:(size.width/5) y:0 duration:4.0];
+    SKAction *moveBackAgain = [moveBackSlightly reversedAction];
+    
+    SKAction *backAndForth = [SKAction sequence:@[moveBackSlightly,moveBackAgain]];
+    
+    CGPoint location = [trunk position];
+    CGPoint belowLocation = CGPointMake(location.x, size.height - size.height/5);
+    // back and forth until tree falls below certain height
+    [trunk runAction:backAndForth completion:^{
+        if (belowLocation.y == location.y) {
+            NSLog(@"below threshold height");
+        }
+    }];
+    
 }
 
 // scene initialiser and setting properties
