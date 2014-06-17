@@ -294,6 +294,57 @@ BOOL touchingPaddle;
     
 }
 
+- (void)addPaddleEngine:(CGSize)size {
+    // add particle emitter paddle engine
+    // recreates the object with settings
+    self.paddleEngine = [[SKEmitterNode alloc] init];
+    
+    self.paddleEngine = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"PaddleEngine" ofType:@"sks"]];
+    
+    // add the paddleEngine to Parent of paddle
+    // set position relative to centrepoint of paddle
+    // paddleEngine inherits settings (i.e. scales down)
+    self.paddleEngine.position = CGPointMake(0, -10);
+    self.paddleEngine.zPosition = 20;
+}
+
+- (void)addEmitterLukeSchoen:(CGSize)size {
+    // unarchive SKS file into this object with all default settings
+    SKEmitterNode *snow = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"luke_schoen" ofType:@"sks"]];
+    
+    // set its position at middle top of screen
+    snow.position = CGPointMake(size.width/2, size.height);
+    
+    // advance the simulation of the particle effect
+    // to appear as if has already been running for 10 seconds
+    //[snow advanceSimulationTime:10];
+    
+    // add to scene
+    [self addChild:snow];
+}
+
+- (void)playSFX {
+    // create the action object and wait for another node in the game to run it (as the action may animate or change the colour of the node)
+    self.playSFXPaddle = [[SKAction alloc] init];
+    self.playSFXBrick = [[SKAction alloc] init];
+    self.playSFXPaddle = [SKAction playSoundFileNamed:@"blip.caf" waitForCompletion:NO];
+    self.playSFXBrick = [SKAction playSoundFileNamed:@"brickhit.caf" waitForCompletion:NO];
+}
+
+- (void)addInstructions:(CGSize)size {
+    // instructions label
+    SKLabelNode *instructionsLabel = [SKLabelNode labelNodeWithFontNamed:@"Futura Medium"];
+    instructionsLabel.text = @"Hold onto the Paddle!";
+    instructionsLabel.fontColor = [SKColor blueColor];
+    instructionsLabel.fontSize = 24;
+    instructionsLabel.position = CGPointMake(size.width/2, 0);
+    
+    SKAction *moveLabel = [SKAction moveToY:(size.height/2 - 40) duration:5.0];
+    [instructionsLabel runAction:moveLabel]; // tell the label to run the action
+    
+    [self addChild:instructionsLabel];
+}
+
 // scene initialiser and setting properties
 -(id)initWithSize:(CGSize)size {    
     if (self = [super initWithSize:size]) {
@@ -303,31 +354,8 @@ BOOL touchingPaddle;
         
         self.backgroundColor = [SKColor colorWithRed:0.15 green:0.15 blue:0.3 alpha:0.8];
         
-        // unarchive SKS file into this object with all default settings
-        SKEmitterNode *snow = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"luke_schoen" ofType:@"sks"]];
-        
-        // set its position at middle top of screen
-        snow.position = CGPointMake(size.width/2, size.height);
-        
-        // advance the simulation of the particle effect
-        // to appear as if has already been running for 10 seconds
-        //[snow advanceSimulationTime:10];
-        
-        // add to scene
-        [self addChild:snow];
-        
-        // add particle emitter paddle engine
-        // recreates the object with settings
-        self.paddleEngine = [[SKEmitterNode alloc] init];
-        
-        self.paddleEngine = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"PaddleEngine" ofType:@"sks"]];
-        
-        // add the paddleEngine to Parent of paddle
-        // set position relative to centrepoint of paddle
-        // paddleEngine inherits settings (i.e. scales down)
-        self.paddleEngine.position = CGPointMake(0, -10);
-        self.paddleEngine.zPosition = 20;
-        // add paddleEngine after addPaddle, where paddle created, shown further below
+        // call snow emitter luke schoen method to create, configure, and add the snow emitter to the scene
+        [self addEmitterLukeSchoen:size];
         
         // add physics body to scene to serve as an invisible boundary
         self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
@@ -349,6 +377,10 @@ BOOL touchingPaddle;
         
         // call addPlayer method to create, configure, and add the player object to the scene
         [self addPlayer:size];
+        
+        [self addPaddleEngine:size];
+        
+        // add paddleEngine after addPaddle
         [self.paddle addChild:self.paddleEngine];
         
         // call addBricks method to create, configure, and add the bricks objects to the scene
@@ -356,23 +388,9 @@ BOOL touchingPaddle;
         
         [self addBottomEdge:size];
         
-        // create the action object and wait for another node in the game to run it (as the action may animate or change the colour of the node)
-        self.playSFXPaddle = [[SKAction alloc] init];
-        self.playSFXBrick = [[SKAction alloc] init];
-        self.playSFXPaddle = [SKAction playSoundFileNamed:@"blip.caf" waitForCompletion:NO];
-        self.playSFXBrick = [SKAction playSoundFileNamed:@"brickhit.caf" waitForCompletion:NO];
+        [self playSFX];
         
-        // instructions label
-        SKLabelNode *instructionsLabel = [SKLabelNode labelNodeWithFontNamed:@"Futura Medium"];
-        instructionsLabel.text = @"Hold onto the Paddle!";
-        instructionsLabel.fontColor = [SKColor blueColor];
-        instructionsLabel.fontSize = 24;
-        instructionsLabel.position = CGPointMake(size.width/2, 0);
-        
-        SKAction *moveLabel = [SKAction moveToY:(size.height/2 - 40) duration:5.0];
-        [instructionsLabel runAction:moveLabel]; // tell the label to run the action
-        
-        [self addChild:instructionsLabel];
+        [self addInstructions:size];
         
     }
     return self;
