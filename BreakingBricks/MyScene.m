@@ -45,6 +45,11 @@ BOOL touchingPaddle;
 
 @implementation MyScene
 
+-(void)removeFromParent {
+    [super removeFromParent];
+    NSLog(@"removed leaves from tree");
+}
+
 // delegate method code of SKPhysicsContactDelegate
 // Physics World object calls this method whenever two objects detected as having contacted.
 // only if valid contact Bitmask defined for these objects (otherwise this method not called)
@@ -391,8 +396,13 @@ BOOL touchingPaddle;
     trunk.physicsBody.linearDamping = 0; // 0.1 by default. 0 so only lose speed when collide
     trunk.physicsBody.restitution = 1.1f; // 1.0f is bouncy, make higher for super bouncy
     
-    [self addChild:trunk];
+    // set threshold baseline
+    CGPoint location = [trunk position];
     
+    // set lower threshold
+    CGPoint belowLocation = CGPointMake(location.x, size.height - size.height/5);
+    
+    [self addChild:trunk];
     
     SKSpriteNode *leaves = [SKSpriteNode spriteNodeWithColor:[SKColor greenColor] size:CGSizeMake(35, 35)];
     leaves.position = CGPointMake(70, 0); // so appears right of trunk
@@ -413,14 +423,23 @@ BOOL touchingPaddle;
     SKAction *moveBackSlightly = [SKAction moveByX:(size.width/5) y:0 duration:4.0];
     SKAction *moveBackAgain = [moveBackSlightly reversedAction];
     
-    SKAction *backAndForth = [SKAction sequence:@[moveBackSlightly,moveBackAgain]];
+    SKAction *wait = [SKAction waitForDuration:0.5];
     
-    CGPoint location = [trunk position];
-    CGPoint belowLocation = CGPointMake(location.x, size.height - size.height/5);
-    // back and forth until tree falls below certain height
-    [trunk runAction:backAndForth completion:^{
+    // sequence
+    SKAction *backAndForth = [SKAction sequence:@[moveBackSlightly,wait,moveBackAgain,wait]];
+    
+    SKAction *repeater = [SKAction repeatAction:backAndForth count:10];
+    
+    // repeat until tree falls below certain height
+    [trunk runAction:repeater completion:^{
         if (belowLocation.y == location.y) {
             NSLog(@"below threshold height");
+            
+            // attempt to remove leaves from tree (NOT WORKING!!)
+            [leaves removeFromParent];
+            [leaves.physicsBody applyForce:CGVectorMake(0, -5)];
+            [super addChild:leaves];
+            
         }
     }];
     

@@ -10,4 +10,6 @@
 
 @interface MyScene : SKScene <SKPhysicsContactDelegate>
 
+// class method to remove from parent for dropping leaves from tree
+
 @end
