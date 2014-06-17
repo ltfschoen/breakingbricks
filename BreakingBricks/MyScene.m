@@ -452,7 +452,12 @@ BOOL touchingPaddle;
         
         touchingPaddle = NO;
         
-        self.backgroundColor = [SKColor colorWithRed:0.15 green:0.15 blue:0.3 alpha:0.8];
+        //self.backgroundColor = [SKColor colorWithRed:0.15 green:0.15 blue:0.3 alpha:0.8];
+        
+        // add background image
+        SKSpriteNode *bg = [SKSpriteNode spriteNodeWithImageNamed:@"background_320_568"];
+        bg.position = CGPointMake(size.width/2, size.height/2);
+        [self addChild:bg];
         
         // call snow emitter luke schoen method to create, configure, and add the snow emitter to the scene
         [self addEmitterLukeSchoen:size];

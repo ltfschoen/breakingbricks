@@ -40,6 +40,7 @@
 		A359AEAC194FAF3400749D37 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = A359AEAA194FAF3400749D37 /* spark.png */; };
 		A359AEAF194FDC8F00749D37 /* WinScene.m in Sources */ = {isa = PBXBuildFile; fileRef = A359AEAE194FDC8F00749D37 /* WinScene.m */; };
 		A359AEB1194FDDA400749D37 /* youwin.caf in Resources */ = {isa = PBXBuildFile; fileRef = A359AEB0194FDDA400749D37 /* youwin.caf */; };
+		A359AEB51950113100749D37 /* background_320_568.png in Resources */ = {isa = PBXBuildFile; fileRef = A359AEB41950113100749D37 /* background_320_568.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,6 +95,7 @@
 		A359AEAD194FDC8E00749D37 /* WinScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WinScene.h; path = ../WinScene.h; sourceTree = "<group>"; };
 		A359AEAE194FDC8F00749D37 /* WinScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WinScene.m; path = ../WinScene.m; sourceTree = "<group>"; };
 		A359AEB0194FDDA400749D37 /* youwin.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = youwin.caf; sourceTree = "<group>"; };
+		A359AEB41950113100749D37 /* background_320_568.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background_320_568.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -227,6 +229,7 @@
 		A359AEA5194EFF8500749D37 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				A359AEB41950113100749D37 /* background_320_568.png */,
 				A359AE87194E484800749D37 /* ball.png */,
 				A359AE88194E484800749D37 /* ball@2x.png */,
 				A359AE89194E484800749D37 /* brick.png */,
@@ -337,6 +340,7 @@
 				A359AE92194E484800749D37 /* paddle@2x.png in Resources */,
 				A359AE98194ECE8200749D37 /* brickhit.caf in Resources */,
 				A359AE6B194E47DB00749D37 /* Images.xcassets in Resources */,
+				A359AEB51950113100749D37 /* background_320_568.png in Resources */,
 				A359AE9E194EF7F900749D37 /* youlose.caf in Resources */,
 				A359AEA1194EFF3E00749D37 /* luke_schoen.sks in Resources */,
 				A359AE61194E47DB00749D37 /* Main.storyboard in Resources */,
