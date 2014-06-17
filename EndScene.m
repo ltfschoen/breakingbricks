@@ -46,7 +46,7 @@
         tryAgain.text = @"Tap to Play Again";
         tryAgain.fontColor = [SKColor whiteColor];
         tryAgain.fontSize = 24;
-        tryAgain.position = CGPointMake(size.width/2, size.height/2 - 40);
+        tryAgain.position = CGPointMake(size.width/2, 0);
         
         SKAction *moveLabel = [SKAction moveToY:(size.height/2 - 40) duration:2.0];
         [tryAgain runAction:moveLabel]; // tell the label to run the action

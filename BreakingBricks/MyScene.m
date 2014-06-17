@@ -294,7 +294,6 @@ BOOL touchingPaddle;
     
 }
 
-
 // scene initialiser and setting properties
 -(id)initWithSize:(CGSize)size {    
     if (self = [super initWithSize:size]) {
@@ -362,17 +361,58 @@ BOOL touchingPaddle;
         self.playSFXBrick = [[SKAction alloc] init];
         self.playSFXPaddle = [SKAction playSoundFileNamed:@"blip.caf" waitForCompletion:NO];
         self.playSFXBrick = [SKAction playSoundFileNamed:@"brickhit.caf" waitForCompletion:NO];
+        
+        // instructions label
+        SKLabelNode *instructionsLabel = [SKLabelNode labelNodeWithFontNamed:@"Futura Medium"];
+        instructionsLabel.text = @"Hold onto the Paddle!";
+        instructionsLabel.fontColor = [SKColor blueColor];
+        instructionsLabel.fontSize = 24;
+        instructionsLabel.position = CGPointMake(size.width/2, 0);
+        
+        SKAction *moveLabel = [SKAction moveToY:(size.height/2 - 40) duration:5.0];
+        [instructionsLabel runAction:moveLabel]; // tell the label to run the action
+        
+        [self addChild:instructionsLabel];
+        
     }
     return self;
 }
+
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    touchingPaddle = YES; // boolean
+    //self.paddleEngine.hidden = NO;
+    self.paddleEngine.numParticlesToEmit = 0; // 0 is infinite particles
+}
+
+-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    touchingPaddle = NO;
+    //self.paddleEngine.hidden = YES;
+    self.paddleEngine.numParticlesToEmit = 100; // gradual instead of instant disappearance
+    
+    // reset paddle position when let go of touch
+    CGPoint location = [self.paddle position];
+    self.paddle.position = CGPointMake(location.x, 50);
+}
+
 
 -(void)update:(CFTimeInterval)currentTime {
     /* Called before each frame is rendered */
     
     // apply upwards force
     if (touchingPaddle) {
-        [self.paddle.physicsBody applyForce:CGVectorMake(0, 150)];
+        [self.paddle.physicsBody applyForce:CGVectorMake(0, 5)];
+        CGPoint location = [self.paddle position];
+        CGPoint aboveLocation = CGPointMake(location.x, 160);
+
         // applyImpulse or applyForce alternative
+        //[self.paddle.physicsBody applyForce:CGVectorMake(0, -2)];
+        
+        // stop paddle impulsing too high. return back after each impulse
+        if (aboveLocation.y == location.y) {
+            NSLog(@"above threshold height");
+            self.paddle.position = CGPointMake(location.x, 50);
+            [self.paddle.physicsBody applyForce:CGVectorMake(0, -5)];
+        }
     }
 }
 
