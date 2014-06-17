@@ -450,6 +450,8 @@ BOOL touchingPaddle;
     if (self = [super initWithSize:size]) {
         /* Setup your scene here */
         
+        NSLog(@"In initWithSize, at %.0f wide and %.0f high", size.width, size.height);
+        
         touchingPaddle = NO;
         
         //self.backgroundColor = [SKColor colorWithRed:0.15 green:0.15 blue:0.3 alpha:0.8];
