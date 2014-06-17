@@ -366,9 +366,14 @@ BOOL touchingPaddle;
 - (void)addTree:(CGSize)size {
     // add bonus points platform
     SKSpriteNode *trunk = [SKSpriteNode spriteNodeWithColor:[SKColor brownColor] size:CGSizeMake(200, 10)];
-    trunk.position = CGPointMake(size.width/2, 40);
+    trunk.position = CGPointMake(size.width/2, size.height - size.height/20);
     // add a volume-based physics body taking up space on the scene
     trunk.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:trunk.frame.size];
+    
+    SKAction *rotation = [SKAction rotateByAngle: M_PI/4.0 duration:10];
+    //and just run the action
+    [trunk runAction: rotation];
+    
     trunk.physicsBody.dynamic = YES;
     // add physics body to category
     trunk.physicsBody.categoryBitMask = treeCategory;
