@@ -21,6 +21,9 @@
 @property (nonatomic, strong) SKAction *playSFXPaddle;
 @property (nonatomic, strong) SKAction *playSFXBrick;
 
+@property (nonatomic, strong) SKLabelNode *pauseButton;
+@property (nonatomic, strong) SKLabelNode *restartNow;
+
 @end
 
 // define categories to be constant and static across the scene class
@@ -491,6 +494,33 @@ BOOL touchingPaddle;
     // reset paddle position when let go of touch
     CGPoint location = [self.paddle position];
     self.paddle.position = CGPointMake(location.x, 50);
+    
+    if ([self isPaused]) {
+        [self.pauseButton setScale:0.0];
+        // new button as cannot run actions on paused nodes
+        self.restartNow = [SKLabelNode labelNodeWithFontNamed:@"Futura Medium"];
+        [self.restartNow setHorizontalAlignmentMode:SKLabelHorizontalAlignmentModeCenter];
+        [self.restartNow setPosition:CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame))];
+        [self.restartNow setFontSize:48.0f];
+        [self.restartNow setZPosition:100];
+        [self.restartNow setText:@"3"];
+        [self addChild:self.restartNow];
+         
+        [self.restartNow runAction:[SKAction scaleTo:0.0 duration:1.0] completion:^{
+                [self setPaused:NO];
+            }
+        ];
+    } else {
+        self.pauseButton = [SKLabelNode labelNodeWithFontNamed:@"Futura Medium"];
+        [self.pauseButton setHorizontalAlignmentMode:SKLabelHorizontalAlignmentModeCenter];
+        [self.pauseButton setPosition:CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame))];
+        [self.pauseButton setFontSize:48.0f];
+        [self.pauseButton setZPosition:100];
+        [self.pauseButton setText:@"Pause"];
+        [self addChild:self.pauseButton];
+        [self setPaused:YES];
+        [self.pauseButton runAction:[SKAction sequence:@[[SKAction scaleTo:1.5 duration:0.1], [SKAction scaleTo:1.0 duration:0.1]]]];
+    }
 }
 
 
