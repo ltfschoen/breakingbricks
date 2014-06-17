@@ -35,6 +35,7 @@ static const uint32_t paddleCategory    = 0x1 << 1; // 0000000000000000000000000
 static const uint32_t brickCategory    = 0x1 << 2; // 00000000000000000000000000000100
 static const uint32_t edgeCategory      = 0x1 << 3; // 00000000000000000000000000001000
 static const uint32_t bottomEdgeCategory = 0x1 << 4;
+static const uint32_t treeCategory      = 0x1 << 5;
 
 BOOL touchingPaddle;
 
@@ -334,15 +335,43 @@ BOOL touchingPaddle;
 - (void)addInstructions:(CGSize)size {
     // instructions label
     SKLabelNode *instructionsLabel = [SKLabelNode labelNodeWithFontNamed:@"Futura Medium"];
-    instructionsLabel.text = @"Hold onto the Paddle!";
+    instructionsLabel.text = @"Hold Paddle! Plant Tree Wins. Avoid bottom!";
     instructionsLabel.fontColor = [SKColor blueColor];
-    instructionsLabel.fontSize = 24;
+    instructionsLabel.fontSize = 13;
     instructionsLabel.position = CGPointMake(size.width/2, 0);
     
     SKAction *moveLabel = [SKAction moveToY:(size.height/2 - 40) duration:5.0];
     [instructionsLabel runAction:moveLabel]; // tell the label to run the action
     
     [self addChild:instructionsLabel];
+}
+
+- (void)addTree:(CGSize)size {
+    // add bonus points platform
+    SKSpriteNode *trunk = [SKSpriteNode spriteNodeWithColor:[SKColor brownColor] size:CGSizeMake(200, 10)];
+    trunk.position = CGPointMake(size.width/2, size.height - size.height/30);
+    // add a volume-based physics body taking up space on the scene
+    trunk.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:trunk.frame.size];
+    trunk.physicsBody.dynamic = YES;
+    // add physics body to category
+    trunk.physicsBody.categoryBitMask = treeCategory;
+    
+    trunk.physicsBody.contactTestBitMask = ballCategory; // want to be notified when current category touches this other category.
+    
+    trunk.physicsBody.collisionBitMask = edgeCategory | brickCategory | paddleCategory | ballCategory; // collide only with these (i.e. if ball is not mentioned then it would bounce when they collide)
+    
+    [self addChild:trunk];
+    
+    
+    SKSpriteNode *leaves = [SKSpriteNode spriteNodeWithColor:[SKColor greenColor] size:CGSizeMake(35, 35)];
+    leaves.position = CGPointMake(70, 0); // so appears right of trunk
+    leaves.zPosition = 2; // so appears above log
+    // add physics body to category
+    leaves.physicsBody.dynamic = YES;
+    leaves.physicsBody.categoryBitMask = treeCategory;
+    
+    // add leaves after trunk
+    [trunk addChild:leaves];
 }
 
 // scene initialiser and setting properties
@@ -385,6 +414,8 @@ BOOL touchingPaddle;
         
         // call addBricks method to create, configure, and add the bricks objects to the scene
         [self addBricks:size];
+        
+        [self addTree:size];
         
         [self addBottomEdge:size];
         
