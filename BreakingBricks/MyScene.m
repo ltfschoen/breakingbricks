@@ -15,6 +15,7 @@
 @interface MyScene ()
 
 @property (nonatomic, strong) SKSpriteNode *paddle;
+@property (nonatomic, strong) SKEmitterNode *paddleEngine; // allow reference throughout the scene
 
 @property (nonatomic, strong) SKAction *playSFXPaddle;
 @property (nonatomic, strong) SKAction *playSFXBrick;
@@ -63,14 +64,14 @@ BOOL touchingPaddle;
     
     // game over if paddle hits edge scene at bottom
     if (contact.bodyA.categoryBitMask == bottomEdgeCategory && contact.bodyB.categoryBitMask == paddleCategory) {
-        NSLog(@"paddle fallen!");
+        NSLog(@"paddle hit bottom of screen, you die!");
             
         EndScene *end = [EndScene sceneWithSize:self.size];
             
         [self.view presentScene:end transition:[SKTransition fadeWithColor:[UIColor yellowColor] duration:1.0]];
     }
     if (contact.bodyA.categoryBitMask == paddleCategory && contact.bodyB.categoryBitMask == bottomEdgeCategory) {
-        NSLog(@"paddle fallen!");
+        NSLog(@"paddle hit bottom of screen, you die!");
             
         EndScene *end = [EndScene sceneWithSize:self.size];
             
@@ -282,17 +283,16 @@ BOOL touchingPaddle;
     self.paddle.physicsBody.contactTestBitMask = bottomEdgeCategory; // want to be notified when current category touches this other category. using a logical OR (so it flips if either of the categories contacted)
     
     // modify physics body friction Settings (specifically to react if paddle hits bottom edge
-    self.paddle.physicsBody.friction = 0.5;
-    self.paddle.physicsBody.linearDamping = 0.1; // 0.1 by default
-    self.paddle.physicsBody.restitution = 0.1f;
+//    self.paddle.physicsBody.friction = 0.5;
+//    self.paddle.physicsBody.linearDamping = 0.1; // 0.1 by default
+//    self.paddle.physicsBody.restitution = 0.1f;
     
-    //self.paddle.physicsBody.collisionBitMask = edgeCategory | brickCategory | paddleCategory; // collide only with these (i.e. if ball is not mentioned then it would bounce when they collide)
+    self.paddle.physicsBody.collisionBitMask = edgeCategory | brickCategory | paddleCategory; // collide only with these (i.e. if ball is not mentioned then it would bounce when they collide)
     
     // add paddle property to the scene to make it visible
     [self addChild:self.paddle];
     
 }
-
 
 // scene initialiser and setting properties
 -(id)initWithSize:(CGSize)size {    
@@ -313,13 +313,24 @@ BOOL touchingPaddle;
         // to appear as if has already been running for 10 seconds
         //[snow advanceSimulationTime:10];
         
-        
         // add to scene
         [self addChild:snow];
         
+        // add particle emitter paddle engine
+        // recreates the object with settings
+        self.paddleEngine = [[SKEmitterNode alloc] init];
+        
+        self.paddleEngine = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"PaddleEngine" ofType:@"sks"]];
+        
+        // add the paddleEngine to Parent of paddle
+        // set position relative to centrepoint of paddle
+        // paddleEngine inherits settings (i.e. scales down)
+        self.paddleEngine.position = CGPointMake(0, -10);
+        self.paddleEngine.zPosition = 20;
+        // add paddleEngine after addPaddle, where paddle created, shown further below
+        
         // add physics body to scene to serve as an invisible boundary
         self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
-        
         
         // add physics body to category
         self.physicsBody.categoryBitMask = edgeCategory;
@@ -338,6 +349,7 @@ BOOL touchingPaddle;
         
         // call addPlayer method to create, configure, and add the player object to the scene
         [self addPlayer:size];
+        [self.paddle addChild:self.paddleEngine];
         
         // call addBricks method to create, configure, and add the bricks objects to the scene
         [self addBricks:size];
@@ -349,17 +361,58 @@ BOOL touchingPaddle;
         self.playSFXBrick = [[SKAction alloc] init];
         self.playSFXPaddle = [SKAction playSoundFileNamed:@"blip.caf" waitForCompletion:NO];
         self.playSFXBrick = [SKAction playSoundFileNamed:@"brickhit.caf" waitForCompletion:NO];
+        
+        // instructions label
+        SKLabelNode *instructionsLabel = [SKLabelNode labelNodeWithFontNamed:@"Futura Medium"];
+        instructionsLabel.text = @"Hold onto the Paddle!";
+        instructionsLabel.fontColor = [SKColor blueColor];
+        instructionsLabel.fontSize = 24;
+        instructionsLabel.position = CGPointMake(size.width/2, 0);
+        
+        SKAction *moveLabel = [SKAction moveToY:(size.height/2 - 40) duration:5.0];
+        [instructionsLabel runAction:moveLabel]; // tell the label to run the action
+        
+        [self addChild:instructionsLabel];
+        
     }
     return self;
 }
+
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    touchingPaddle = YES; // boolean
+    //self.paddleEngine.hidden = NO;
+    self.paddleEngine.numParticlesToEmit = 0; // 0 is infinite particles
+}
+
+-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    touchingPaddle = NO;
+    //self.paddleEngine.hidden = YES;
+    self.paddleEngine.numParticlesToEmit = 100; // gradual instead of instant disappearance
+    
+    // reset paddle position when let go of touch
+    CGPoint location = [self.paddle position];
+    self.paddle.position = CGPointMake(location.x, 50);
+}
+
 
 -(void)update:(CFTimeInterval)currentTime {
     /* Called before each frame is rendered */
     
     // apply upwards force
     if (touchingPaddle) {
-        [self.paddle.physicsBody applyForce:CGVectorMake(0, 150)];
+        [self.paddle.physicsBody applyForce:CGVectorMake(0, 5)];
+        CGPoint location = [self.paddle position];
+        CGPoint aboveLocation = CGPointMake(location.x, 160);
+
         // applyImpulse or applyForce alternative
+        //[self.paddle.physicsBody applyForce:CGVectorMake(0, -2)];
+        
+        // stop paddle impulsing too high. return back after each impulse
+        if (aboveLocation.y == location.y) {
+            NSLog(@"above threshold height");
+            self.paddle.position = CGPointMake(location.x, 50);
+            [self.paddle.physicsBody applyForce:CGVectorMake(0, -5)];
+        }
     }
 }
 

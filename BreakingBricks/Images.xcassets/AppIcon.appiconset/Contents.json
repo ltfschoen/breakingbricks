@@ -3,25 +3,25 @@
     {
       "size" : "29x29",
       "idiom" : "iphone",
-      "filename" : "luke_schoen.png",
+      "filename" : "launch-58-58.png",
       "scale" : "2x"
     },
     {
       "size" : "40x40",
       "idiom" : "iphone",
-      "filename" : "luke_schoen-1.png",
+      "filename" : "launch-1-80-80.png",
       "scale" : "2x"
     },
     {
       "size" : "60x60",
       "idiom" : "iphone",
-      "filename" : "luke_schoen-2.png",
+      "filename" : "launch-2-120-120.png",
       "scale" : "2x"
     },
     {
       "size" : "32x32",
       "idiom" : "mac",
-      "filename" : "luke_schoen-3.png",
+      "filename" : "luke_schoen.png",
       "scale" : "2x"
     }
   ],
