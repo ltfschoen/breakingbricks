@@ -38,6 +38,8 @@
 		A359AEA8194F06C700749D37 /* luke_schoen.png in Resources */ = {isa = PBXBuildFile; fileRef = A359AEA7194F06C700749D37 /* luke_schoen.png */; };
 		A359AEAB194FAF3400749D37 /* PaddleEngine.sks in Resources */ = {isa = PBXBuildFile; fileRef = A359AEA9194FAF3400749D37 /* PaddleEngine.sks */; };
 		A359AEAC194FAF3400749D37 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = A359AEAA194FAF3400749D37 /* spark.png */; };
+		A359AEAF194FDC8F00749D37 /* WinScene.m in Sources */ = {isa = PBXBuildFile; fileRef = A359AEAE194FDC8F00749D37 /* WinScene.m */; };
+		A359AEB1194FDDA400749D37 /* youwin.caf in Resources */ = {isa = PBXBuildFile; fileRef = A359AEB0194FDDA400749D37 /* youwin.caf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +91,9 @@
 		A359AEA7194F06C700749D37 /* luke_schoen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = luke_schoen.png; sourceTree = "<group>"; };
 		A359AEA9194FAF3400749D37 /* PaddleEngine.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; name = PaddleEngine.sks; path = BreakingBricks/PaddleEngine.sks; sourceTree = "<group>"; };
 		A359AEAA194FAF3400749D37 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spark.png; path = BreakingBricks/spark.png; sourceTree = "<group>"; };
+		A359AEAD194FDC8E00749D37 /* WinScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WinScene.h; path = ../WinScene.h; sourceTree = "<group>"; };
+		A359AEAE194FDC8F00749D37 /* WinScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WinScene.m; path = ../WinScene.m; sourceTree = "<group>"; };
+		A359AEB0194FDDA400749D37 /* youwin.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = youwin.caf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -160,6 +165,8 @@
 				A359AE66194E47DB00749D37 /* MyScene.m */,
 				A359AE9A194EEBDE00749D37 /* EndScene.h */,
 				A359AE9B194EEBDE00749D37 /* EndScene.m */,
+				A359AEAD194FDC8E00749D37 /* WinScene.h */,
+				A359AEAE194FDC8F00749D37 /* WinScene.m */,
 				A359AE6A194E47DB00749D37 /* Images.xcassets */,
 				A359AE54194E47DB00749D37 /* Supporting Files */,
 			);
@@ -208,6 +215,7 @@
 		A359AEA4194EFF7400749D37 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				A359AEB0194FDDA400749D37 /* youwin.caf */,
 				A359AE9D194EF7F900749D37 /* youlose.caf */,
 				A359AE94194ECE8200749D37 /* blip.caf */,
 				A359AE95194ECE8200749D37 /* brickhit.caf */,
@@ -319,6 +327,7 @@
 				A359AE58194E47DB00749D37 /* InfoPlist.strings in Resources */,
 				A359AE8E194E484800749D37 /* ball@2x.png in Resources */,
 				A359AEA8194F06C700749D37 /* luke_schoen.png in Resources */,
+				A359AEB1194FDDA400749D37 /* youwin.caf in Resources */,
 				A359AE97194ECE8200749D37 /* blip.caf in Resources */,
 				A359AE8F194E484800749D37 /* brick.png in Resources */,
 				A359AE8D194E484800749D37 /* ball.png in Resources */,
@@ -354,6 +363,7 @@
 				A359AE67194E47DB00749D37 /* MyScene.m in Sources */,
 				A359AE64194E47DB00749D37 /* ViewController.m in Sources */,
 				A359AE5E194E47DB00749D37 /* AppDelegate.m in Sources */,
+				A359AEAF194FDC8F00749D37 /* WinScene.m in Sources */,
 				A359AE5A194E47DB00749D37 /* main.m in Sources */,
 				A359AE9C194EEBDE00749D37 /* EndScene.m in Sources */,
 			);

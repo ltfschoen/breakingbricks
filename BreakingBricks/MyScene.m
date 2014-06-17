@@ -8,6 +8,7 @@
 
 #import "MyScene.h"
 #import "EndScene.h"
+#import "WinScene.h"
 
 // add wider reference to access addPlayer for when react later to touches
 // with a Class Extension to the implementation and property added
@@ -19,6 +20,9 @@
 
 @property (nonatomic, strong) SKAction *playSFXPaddle;
 @property (nonatomic, strong) SKAction *playSFXBrick;
+
+@property (nonatomic, strong) SKLabelNode *pauseButton;
+@property (nonatomic, strong) SKLabelNode *restartNow;
 
 @end
 
@@ -35,6 +39,7 @@ static const uint32_t paddleCategory    = 0x1 << 1; // 0000000000000000000000000
 static const uint32_t brickCategory    = 0x1 << 2; // 00000000000000000000000000000100
 static const uint32_t edgeCategory      = 0x1 << 3; // 00000000000000000000000000001000
 static const uint32_t bottomEdgeCategory = 0x1 << 4;
+static const uint32_t treeCategory      = 0x1 << 5;
 
 BOOL touchingPaddle;
 
@@ -76,6 +81,22 @@ BOOL touchingPaddle;
         EndScene *end = [EndScene sceneWithSize:self.size];
             
         [self.view presentScene:end transition:[SKTransition fadeWithColor:[UIColor blueColor] duration:1.0]];
+    }
+    
+    // win if tree hits edge scene at bottom
+    if (contact.bodyA.categoryBitMask == bottomEdgeCategory && contact.bodyB.categoryBitMask == treeCategory) {
+        NSLog(@"tree hit bottom of screen, you win!");
+        
+        WinScene *end = [WinScene sceneWithSize:self.size];
+        
+        [self.view presentScene:end transition:[SKTransition fadeWithColor:[UIColor greenColor] duration:4.0]];
+    }
+    if (contact.bodyA.categoryBitMask == treeCategory && contact.bodyB.categoryBitMask == bottomEdgeCategory) {
+        NSLog(@"tree hit bottom of screen, you win!");
+        
+        WinScene *end = [WinScene sceneWithSize:self.size];
+        
+        [self.view presentScene:end transition:[SKTransition fadeWithColor:[UIColor greenColor] duration:4.0]];
     }
     
     
@@ -232,6 +253,7 @@ BOOL touchingPaddle;
         // add brick sprite to the scene
         [self addChild:brick];
     }
+
 }
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -294,6 +316,116 @@ BOOL touchingPaddle;
     
 }
 
+- (void)addPaddleEngine:(CGSize)size {
+    // add particle emitter paddle engine
+    // recreates the object with settings
+    self.paddleEngine = [[SKEmitterNode alloc] init];
+    
+    self.paddleEngine = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"PaddleEngine" ofType:@"sks"]];
+    
+    // add the paddleEngine to Parent of paddle
+    // set position relative to centrepoint of paddle
+    // paddleEngine inherits settings (i.e. scales down)
+    self.paddleEngine.position = CGPointMake(0, -10);
+    self.paddleEngine.zPosition = 20;
+}
+
+- (void)addEmitterLukeSchoen:(CGSize)size {
+    // unarchive SKS file into this object with all default settings
+    SKEmitterNode *snow = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"luke_schoen" ofType:@"sks"]];
+    
+    // set its position at middle top of screen
+    snow.position = CGPointMake(size.width/2, size.height);
+    
+    // advance the simulation of the particle effect
+    // to appear as if has already been running for 10 seconds
+    //[snow advanceSimulationTime:10];
+    
+    // add to scene
+    [self addChild:snow];
+}
+
+- (void)playSFX {
+    // create the action object and wait for another node in the game to run it (as the action may animate or change the colour of the node)
+    self.playSFXPaddle = [[SKAction alloc] init];
+    self.playSFXBrick = [[SKAction alloc] init];
+    self.playSFXPaddle = [SKAction playSoundFileNamed:@"blip.caf" waitForCompletion:NO];
+    self.playSFXBrick = [SKAction playSoundFileNamed:@"brickhit.caf" waitForCompletion:NO];
+}
+
+- (void)addInstructions:(CGSize)size {
+    // instructions label
+    SKLabelNode *instructionsLabel = [SKLabelNode labelNodeWithFontNamed:@"Futura Medium"];
+    instructionsLabel.text = @"Hold Paddle! Plant Tree Wins. Avoid bottom!";
+    instructionsLabel.fontColor = [SKColor blueColor];
+    instructionsLabel.fontSize = 13;
+    instructionsLabel.position = CGPointMake(size.width/2, 0);
+    
+    SKAction *moveLabel = [SKAction moveToY:(size.height/2 - 40) duration:5.0];
+    [instructionsLabel runAction:moveLabel]; // tell the label to run the action
+    
+    [self addChild:instructionsLabel];
+}
+
+- (void)addTree:(CGSize)size {
+    // add bonus points platform
+    SKSpriteNode *trunk = [SKSpriteNode spriteNodeWithColor:[SKColor brownColor] size:CGSizeMake(200, 10)];
+    trunk.position = CGPointMake(0, size.height - size.height/10);
+    // add a volume-based physics body taking up space on the scene
+    trunk.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:trunk.frame.size];
+    
+    SKAction *rotation = [SKAction rotateByAngle: M_PI/4.0 duration:10];
+    //and just run the action
+    [trunk runAction: rotation];
+    
+    trunk.physicsBody.dynamic = YES;
+    // add physics body to category
+    trunk.physicsBody.categoryBitMask = treeCategory;
+    
+    trunk.physicsBody.contactTestBitMask = bottomEdgeCategory; // want to be notified when current category touches this other category.
+    
+    trunk.physicsBody.collisionBitMask = edgeCategory | brickCategory | paddleCategory | ballCategory; // collide only with these (i.e. if ball is not mentioned then it would bounce when they collide)
+    
+    // modify physics body friction Settings
+    trunk.physicsBody.friction = 0;
+    trunk.physicsBody.linearDamping = 0; // 0.1 by default. 0 so only lose speed when collide
+    trunk.physicsBody.restitution = 1.1f; // 1.0f is bouncy, make higher for super bouncy
+    
+    [self addChild:trunk];
+    
+    
+    SKSpriteNode *leaves = [SKSpriteNode spriteNodeWithColor:[SKColor greenColor] size:CGSizeMake(35, 35)];
+    leaves.position = CGPointMake(70, 0); // so appears right of trunk
+    leaves.zPosition = 2; // so appears above log
+    // add physics body to category
+    leaves.physicsBody.dynamic = YES;
+    leaves.physicsBody.categoryBitMask = treeCategory;
+    
+    // add leaves after trunk
+    [trunk addChild:leaves];
+    
+    // throw the tree onto the bricks at the start
+    //SKAction *move = [SKAction moveBy:CGVectorMake(0.1, 10) duration:1.0];
+//    SKAction *move = [SKAction moveTo:CGPointMake(size.width/2, size.height - size.height/30) duration:4.0];
+    SKAction *move = [SKAction moveByX:(size.width/4) y:-0.1 duration:5.0];
+    [trunk runAction:move];
+    
+    SKAction *moveBackSlightly = [SKAction moveByX:(size.width/5) y:0 duration:4.0];
+    SKAction *moveBackAgain = [moveBackSlightly reversedAction];
+    
+    SKAction *backAndForth = [SKAction sequence:@[moveBackSlightly,moveBackAgain]];
+    
+    CGPoint location = [trunk position];
+    CGPoint belowLocation = CGPointMake(location.x, size.height - size.height/5);
+    // back and forth until tree falls below certain height
+    [trunk runAction:backAndForth completion:^{
+        if (belowLocation.y == location.y) {
+            NSLog(@"below threshold height");
+        }
+    }];
+    
+}
+
 // scene initialiser and setting properties
 -(id)initWithSize:(CGSize)size {    
     if (self = [super initWithSize:size]) {
@@ -303,31 +435,8 @@ BOOL touchingPaddle;
         
         self.backgroundColor = [SKColor colorWithRed:0.15 green:0.15 blue:0.3 alpha:0.8];
         
-        // unarchive SKS file into this object with all default settings
-        SKEmitterNode *snow = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"luke_schoen" ofType:@"sks"]];
-        
-        // set its position at middle top of screen
-        snow.position = CGPointMake(size.width/2, size.height);
-        
-        // advance the simulation of the particle effect
-        // to appear as if has already been running for 10 seconds
-        //[snow advanceSimulationTime:10];
-        
-        // add to scene
-        [self addChild:snow];
-        
-        // add particle emitter paddle engine
-        // recreates the object with settings
-        self.paddleEngine = [[SKEmitterNode alloc] init];
-        
-        self.paddleEngine = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"PaddleEngine" ofType:@"sks"]];
-        
-        // add the paddleEngine to Parent of paddle
-        // set position relative to centrepoint of paddle
-        // paddleEngine inherits settings (i.e. scales down)
-        self.paddleEngine.position = CGPointMake(0, -10);
-        self.paddleEngine.zPosition = 20;
-        // add paddleEngine after addPaddle, where paddle created, shown further below
+        // call snow emitter luke schoen method to create, configure, and add the snow emitter to the scene
+        [self addEmitterLukeSchoen:size];
         
         // add physics body to scene to serve as an invisible boundary
         self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:self.frame];
@@ -349,30 +458,22 @@ BOOL touchingPaddle;
         
         // call addPlayer method to create, configure, and add the player object to the scene
         [self addPlayer:size];
+        
+        [self addPaddleEngine:size];
+        
+        // add paddleEngine after addPaddle
         [self.paddle addChild:self.paddleEngine];
         
         // call addBricks method to create, configure, and add the bricks objects to the scene
         [self addBricks:size];
         
+        [self addTree:size];
+        
         [self addBottomEdge:size];
         
-        // create the action object and wait for another node in the game to run it (as the action may animate or change the colour of the node)
-        self.playSFXPaddle = [[SKAction alloc] init];
-        self.playSFXBrick = [[SKAction alloc] init];
-        self.playSFXPaddle = [SKAction playSoundFileNamed:@"blip.caf" waitForCompletion:NO];
-        self.playSFXBrick = [SKAction playSoundFileNamed:@"brickhit.caf" waitForCompletion:NO];
+        [self playSFX];
         
-        // instructions label
-        SKLabelNode *instructionsLabel = [SKLabelNode labelNodeWithFontNamed:@"Futura Medium"];
-        instructionsLabel.text = @"Hold onto the Paddle!";
-        instructionsLabel.fontColor = [SKColor blueColor];
-        instructionsLabel.fontSize = 24;
-        instructionsLabel.position = CGPointMake(size.width/2, 0);
-        
-        SKAction *moveLabel = [SKAction moveToY:(size.height/2 - 40) duration:5.0];
-        [instructionsLabel runAction:moveLabel]; // tell the label to run the action
-        
-        [self addChild:instructionsLabel];
+        [self addInstructions:size];
         
     }
     return self;
@@ -382,6 +483,7 @@ BOOL touchingPaddle;
     touchingPaddle = YES; // boolean
     //self.paddleEngine.hidden = NO;
     self.paddleEngine.numParticlesToEmit = 0; // 0 is infinite particles
+    
 }
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -392,6 +494,34 @@ BOOL touchingPaddle;
     // reset paddle position when let go of touch
     CGPoint location = [self.paddle position];
     self.paddle.position = CGPointMake(location.x, 50);
+    
+    if ([self isPaused]) {
+        // new button as cannot run actions on paused nodes
+        self.restartNow = [SKLabelNode labelNodeWithFontNamed:@"Futura Medium"];
+        [self.restartNow setHorizontalAlignmentMode:SKLabelHorizontalAlignmentModeCenter];
+        [self.restartNow setPosition:CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame))];
+        [self.restartNow setFontSize:48.0f];
+        [self.restartNow setZPosition:100];
+        [self setPaused:NO];
+        [self addChild:self.restartNow];
+        if (self.pauseButton.text != NULL) {
+            [self.pauseButton setText:@""];
+        }
+        
+    } else {
+        if (self.restartNow.text != NULL) {
+            [self.restartNow setText:@""];
+        }
+        self.pauseButton = [SKLabelNode labelNodeWithFontNamed:@"Futura Medium"];
+        [self.pauseButton setHorizontalAlignmentMode:SKLabelHorizontalAlignmentModeCenter];
+        [self.pauseButton setPosition:CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame))];
+        [self.pauseButton setFontSize:48.0f];
+        [self.pauseButton setZPosition:100];
+        [self.pauseButton setText:@"Pause"];
+        [self addChild:self.pauseButton];
+        [self setPaused:YES];
+        [self.pauseButton runAction:[SKAction sequence:@[[SKAction scaleTo:1.5 duration:0.1], [SKAction scaleTo:1.0 duration:0.1]]]];
+    }
 }
 
 
