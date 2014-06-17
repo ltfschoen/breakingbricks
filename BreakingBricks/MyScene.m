@@ -250,6 +250,7 @@ BOOL touchingPaddle;
         // add brick sprite to the scene
         [self addChild:brick];
     }
+
 }
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -366,7 +367,7 @@ BOOL touchingPaddle;
 - (void)addTree:(CGSize)size {
     // add bonus points platform
     SKSpriteNode *trunk = [SKSpriteNode spriteNodeWithColor:[SKColor brownColor] size:CGSizeMake(200, 10)];
-    trunk.position = CGPointMake(size.width/2, size.height - size.height/20);
+    trunk.position = CGPointMake(0, size.height - size.height/20);
     // add a volume-based physics body taking up space on the scene
     trunk.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:trunk.frame.size];
     
@@ -399,6 +400,12 @@ BOOL touchingPaddle;
     
     // add leaves after trunk
     [trunk addChild:leaves];
+    
+    // throw the tree onto the bricks at the start
+    //SKAction *move = [SKAction moveBy:CGVectorMake(0.1, 10) duration:1.0];
+    SKAction *move = [SKAction moveTo:CGPointMake(size.width/2, size.height - size.height/30) duration:4.0];
+    [trunk runAction:move];
+
 }
 
 // scene initialiser and setting properties
@@ -458,6 +465,7 @@ BOOL touchingPaddle;
     touchingPaddle = YES; // boolean
     //self.paddleEngine.hidden = NO;
     self.paddleEngine.numParticlesToEmit = 0; // 0 is infinite particles
+    
 }
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
