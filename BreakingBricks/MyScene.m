@@ -159,7 +159,7 @@ BOOL touchingPaddle;
 
 - (void)addBall:(CGSize)size {
     // create new sprite node from image
-    SKSpriteNode *ball = [SKSpriteNode spriteNodeWithImageNamed:@"ball"];
+    SKSpriteNode *ball = [SKSpriteNode spriteNodeWithImageNamed:@"orb0007"];
     
     // create a CGPoint for sprite position grabbing size parameter
     CGPoint myPoint = CGPointMake(size.width/2, size.height/2);
@@ -180,6 +180,31 @@ BOOL touchingPaddle;
     // add a different physics body 'brick' to contact test bitmask
     ball.physicsBody.contactTestBitMask = brickCategory | paddleCategory | bottomEdgeCategory; // want to be notified when current category touches this other category. using a logical OR (so it flips if either of the categories contacted)
     ball.physicsBody.collisionBitMask = edgeCategory | brickCategory | paddleCategory; // collide only with these
+    
+    // animate the ball
+    // get reference to the atlas
+    SKTextureAtlas *atlas = [SKTextureAtlas atlasNamed:@"orb"];
+    // get all image filenames as string, not objects themselves
+    NSArray *orbImageNames = [atlas textureNames];
+    // sort the filename array
+    NSArray *sortedNames = [orbImageNames sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    // create another array to hold texture objects
+    NSMutableArray *orbTextures = [NSMutableArray array];
+    
+    // loop to enumerate through filenames in order
+    for (NSString *fileName in sortedNames) {
+        // pull out from atlas
+        SKTexture *texture = [atlas textureNamed:fileName];
+        // store in array
+        [orbTextures addObject:texture];
+    }
+    
+    // create animation
+    SKAction *glow = [SKAction animateWithTextures:orbTextures timePerFrame:0.1];
+    // create a repeat action
+    SKAction *keepGlowing = [SKAction repeatActionForever:glow];
+    // run
+    [ball runAction:keepGlowing];
     
     // add sprite node to scene
     NSLog(@"%@", ball);
