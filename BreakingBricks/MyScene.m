@@ -45,6 +45,11 @@ BOOL touchingPaddle;
 
 @implementation MyScene
 
+-(void)removeFromParent {
+    [super removeFromParent];
+    NSLog(@"removed leaves from tree");
+}
+
 // delegate method code of SKPhysicsContactDelegate
 // Physics World object calls this method whenever two objects detected as having contacted.
 // only if valid contact Bitmask defined for these objects (otherwise this method not called)
@@ -154,7 +159,7 @@ BOOL touchingPaddle;
 
 - (void)addBall:(CGSize)size {
     // create new sprite node from image
-    SKSpriteNode *ball = [SKSpriteNode spriteNodeWithImageNamed:@"ball"];
+    SKSpriteNode *ball = [SKSpriteNode spriteNodeWithImageNamed:@"orb0007"];
     
     // create a CGPoint for sprite position grabbing size parameter
     CGPoint myPoint = CGPointMake(size.width/2, size.height/2);
@@ -175,6 +180,31 @@ BOOL touchingPaddle;
     // add a different physics body 'brick' to contact test bitmask
     ball.physicsBody.contactTestBitMask = brickCategory | paddleCategory | bottomEdgeCategory; // want to be notified when current category touches this other category. using a logical OR (so it flips if either of the categories contacted)
     ball.physicsBody.collisionBitMask = edgeCategory | brickCategory | paddleCategory; // collide only with these
+    
+    // animate the ball
+    // get reference to the atlas
+    SKTextureAtlas *atlas = [SKTextureAtlas atlasNamed:@"orb"];
+    // get all image filenames as string, not objects themselves
+    NSArray *orbImageNames = [atlas textureNames];
+    // sort the filename array
+    NSArray *sortedNames = [orbImageNames sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    // create another array to hold texture objects
+    NSMutableArray *orbTextures = [NSMutableArray array];
+    
+    // loop to enumerate through filenames in order
+    for (NSString *fileName in sortedNames) {
+        // pull out from atlas
+        SKTexture *texture = [atlas textureNamed:fileName];
+        // store in array
+        [orbTextures addObject:texture];
+    }
+    
+    // create animation
+    SKAction *glow = [SKAction animateWithTextures:orbTextures timePerFrame:0.1];
+    // create a repeat action
+    SKAction *keepGlowing = [SKAction repeatActionForever:glow];
+    // run
+    [ball runAction:keepGlowing];
     
     // add sprite node to scene
     NSLog(@"%@", ball);
@@ -391,8 +421,13 @@ BOOL touchingPaddle;
     trunk.physicsBody.linearDamping = 0; // 0.1 by default. 0 so only lose speed when collide
     trunk.physicsBody.restitution = 1.1f; // 1.0f is bouncy, make higher for super bouncy
     
-    [self addChild:trunk];
+    // set threshold baseline
+    CGPoint location = [trunk position];
     
+    // set lower threshold
+    CGPoint belowLocation = CGPointMake(location.x, size.height - size.height/5);
+    
+    [self addChild:trunk];
     
     SKSpriteNode *leaves = [SKSpriteNode spriteNodeWithColor:[SKColor greenColor] size:CGSizeMake(35, 35)];
     leaves.position = CGPointMake(70, 0); // so appears right of trunk
@@ -413,14 +448,23 @@ BOOL touchingPaddle;
     SKAction *moveBackSlightly = [SKAction moveByX:(size.width/5) y:0 duration:4.0];
     SKAction *moveBackAgain = [moveBackSlightly reversedAction];
     
-    SKAction *backAndForth = [SKAction sequence:@[moveBackSlightly,moveBackAgain]];
+    SKAction *wait = [SKAction waitForDuration:0.5];
     
-    CGPoint location = [trunk position];
-    CGPoint belowLocation = CGPointMake(location.x, size.height - size.height/5);
-    // back and forth until tree falls below certain height
-    [trunk runAction:backAndForth completion:^{
+    // sequence
+    SKAction *backAndForth = [SKAction sequence:@[moveBackSlightly,wait,moveBackAgain,wait]];
+    
+    SKAction *repeater = [SKAction repeatAction:backAndForth count:10];
+    
+    // repeat until tree falls below certain height
+    [trunk runAction:repeater completion:^{
         if (belowLocation.y == location.y) {
             NSLog(@"below threshold height");
+            
+            // attempt to remove leaves from tree (NOT WORKING!!)
+            [leaves removeFromParent];
+            [leaves.physicsBody applyForce:CGVectorMake(0, -5)];
+            [super addChild:leaves];
+            
         }
     }];
     
@@ -431,9 +475,16 @@ BOOL touchingPaddle;
     if (self = [super initWithSize:size]) {
         /* Setup your scene here */
         
+        NSLog(@"In initWithSize, at %.0f wide and %.0f high", size.width, size.height);
+        
         touchingPaddle = NO;
         
-        self.backgroundColor = [SKColor colorWithRed:0.15 green:0.15 blue:0.3 alpha:0.8];
+        //self.backgroundColor = [SKColor colorWithRed:0.15 green:0.15 blue:0.3 alpha:0.8];
+        
+        // add background image
+        SKSpriteNode *bg = [SKSpriteNode spriteNodeWithImageNamed:@"background_320_568"];
+        bg.position = CGPointMake(size.width/2, size.height/2);
+        [self addChild:bg];
         
         // call snow emitter luke schoen method to create, configure, and add the snow emitter to the scene
         [self addEmitterLukeSchoen:size];
