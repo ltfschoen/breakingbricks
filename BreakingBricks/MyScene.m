@@ -364,7 +364,7 @@ BOOL touchingPaddle;
     // unarchive SKS file into this object with all default settings
     SKEmitterNode *snow = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"luke_schoen" ofType:@"sks"]];
     
-    // set its position at middle top of screen
+    // set its poosition at middle top of screen
     snow.position = CGPointMake(size.width/2, size.height);
     
     // advance the simulation of the particle effect
