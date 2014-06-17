@@ -8,6 +8,7 @@
 
 #import "MyScene.h"
 #import "EndScene.h"
+#import "WinScene.h"
 
 // add wider reference to access addPlayer for when react later to touches
 // with a Class Extension to the implementation and property added
@@ -77,6 +78,22 @@ BOOL touchingPaddle;
         EndScene *end = [EndScene sceneWithSize:self.size];
             
         [self.view presentScene:end transition:[SKTransition fadeWithColor:[UIColor blueColor] duration:1.0]];
+    }
+    
+    // win if tree hits edge scene at bottom
+    if (contact.bodyA.categoryBitMask == bottomEdgeCategory && contact.bodyB.categoryBitMask == treeCategory) {
+        NSLog(@"tree hit bottom of screen, you win!");
+        
+        WinScene *end = [WinScene sceneWithSize:self.size];
+        
+        [self.view presentScene:end transition:[SKTransition fadeWithColor:[UIColor greenColor] duration:4.0]];
+    }
+    if (contact.bodyA.categoryBitMask == treeCategory && contact.bodyB.categoryBitMask == bottomEdgeCategory) {
+        NSLog(@"tree hit bottom of screen, you win!");
+        
+        WinScene *end = [WinScene sceneWithSize:self.size];
+        
+        [self.view presentScene:end transition:[SKTransition fadeWithColor:[UIColor greenColor] duration:4.0]];
     }
     
     
@@ -349,16 +366,21 @@ BOOL touchingPaddle;
 - (void)addTree:(CGSize)size {
     // add bonus points platform
     SKSpriteNode *trunk = [SKSpriteNode spriteNodeWithColor:[SKColor brownColor] size:CGSizeMake(200, 10)];
-    trunk.position = CGPointMake(size.width/2, size.height - size.height/30);
+    trunk.position = CGPointMake(size.width/2, 40);
     // add a volume-based physics body taking up space on the scene
     trunk.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:trunk.frame.size];
     trunk.physicsBody.dynamic = YES;
     // add physics body to category
     trunk.physicsBody.categoryBitMask = treeCategory;
     
-    trunk.physicsBody.contactTestBitMask = ballCategory; // want to be notified when current category touches this other category.
+    trunk.physicsBody.contactTestBitMask = bottomEdgeCategory; // want to be notified when current category touches this other category.
     
     trunk.physicsBody.collisionBitMask = edgeCategory | brickCategory | paddleCategory | ballCategory; // collide only with these (i.e. if ball is not mentioned then it would bounce when they collide)
+    
+    // modify physics body friction Settings
+    trunk.physicsBody.friction = 0;
+    trunk.physicsBody.linearDamping = 0; // 0.1 by default. 0 so only lose speed when collide
+    trunk.physicsBody.restitution = 1.1f; // 1.0f is bouncy, make higher for super bouncy
     
     [self addChild:trunk];
     
