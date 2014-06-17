@@ -19,6 +19,11 @@
       "scale" : "2x"
     },
     {
+      "idiom" : "mac",
+      "size" : "32x32",
+      "scale" : "1x"
+    },
+    {
       "size" : "32x32",
       "idiom" : "mac",
       "filename" : "luke_schoen.png",
